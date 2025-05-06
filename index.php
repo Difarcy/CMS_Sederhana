@@ -22,11 +22,68 @@ $posts = getAllPosts();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMS Sederhana</title>
+    <title>SmartPage</title>
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #2c3e50;
+            --light-bg: #f8f9fa;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+        }
+        .main-header {
+            background: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: 600;
+        }
+        .brand-text {
+            color: white !important;
+        }
+        .content-wrapper {
+            background: var(--light-bg);
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background: white;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .btn-primary {
+            background: var(--secondary-color);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        .btn-danger {
+            background: var(--accent-color);
+            border: none;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        .main-footer {
+            background: var(--primary-color);
+            color: white;
+        }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -42,7 +99,7 @@ $posts = getAllPosts();
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="index.php" class="brand-link">
-                <span class="brand-text font-weight-light">CMS Sederhana</span>
+                <span class="brand-text font-weight-light">SmartPage</span>
             </a>
 
             <!-- Sidebar -->
@@ -128,7 +185,7 @@ $posts = getAllPosts();
 
         <!-- Footer -->
         <footer class="main-footer">
-            <strong>Copyright &copy; 2024 CMS Sederhana</strong>
+            <strong>Copyright &copy; 2024 SmartPage</strong>
             All rights reserved.
         </footer>
     </div>

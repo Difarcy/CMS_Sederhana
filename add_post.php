@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Post - CMS Sederhana</title>
+    <title>Add Post - SmartPage</title>
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- Font Awesome -->
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="index.php" class="brand-link">
-                <span class="brand-text font-weight-light">CMS Sederhana</span>
+                <span class="brand-text font-weight-light">SmartPage</span>
             </a>
 
             <!-- Sidebar -->
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Footer -->
         <footer class="main-footer">
-            <strong>Copyright &copy; 2024 CMS Sederhana</strong>
+            <strong>Copyright &copy; 2024 SmartPage</strong>
             All rights reserved.
         </footer>
     </div>

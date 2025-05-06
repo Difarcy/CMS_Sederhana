@@ -29,11 +29,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - CMS Sederhana</title>
+    <title>Login - SmartPage</title>
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-box {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .login-logo {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .login-card-body {
+            background: white;
+            border-radius: 10px;
+        }
+        .btn-primary {
+            background: #3498db;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        .input-group-text {
+            background: #f8f9fa;
+            border: none;
+        }
+        .form-control {
+            border: none;
+            border-bottom: 2px solid #e9ecef;
+            padding: 10px;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-bottom-color: #3498db;
+        }
+    </style>
 </head>
 <body class="hold-transition login-page">
     <div class="login-box">
