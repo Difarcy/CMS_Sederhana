@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #a8edea 0%, #1e90ff 100%);
+            background: linear-gradient(135deg, #22c1c3 0%, #7b2ff2 100%);
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -52,16 +52,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             min-width: 0;
         }
         .brand-img {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 18px;
+            width: 170px;
+            height: 170px;
+            margin-bottom: 24px;
         }
         .brand-title {
-            color: #1e90ff;
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
+            color: #7b2ff2;
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
         }
         .brand-desc {
             color: #222;
@@ -78,21 +78,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 0 5vw;
         }
         .register-container {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            width: 340px;
-            max-width: 90vw;
-            padding: 28px 28px 20px 28px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(123,47,242,0.10);
+            width: 360px;
+            max-width: 95vw;
+            padding: 36px 32px 24px 32px;
             position: relative;
+            border: 1.5px solid #e0d7fa;
         }
         .register-container::after {
             content: '';
             position: absolute;
-            top: 0; right: 0; bottom: 0;
-            width: 12px;
-            background: #1e90ff;
-            border-radius: 0 10px 10px 0;
+            top: -1px; right: -1px;
+            height: calc(100% + 2px);
+            width: 16px;
+            background: linear-gradient(180deg, #7b2ff2 0%, #04c8de 100%);
+            border-radius: 0 18px 18px 0;
         }
         .register-title {
             color: #1e90ff;
@@ -189,9 +191,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="main-wrapper">
         <div class="left-panel">
-            <img src="https://cdn-icons-png.flaticon.com/512/2721/2721723.png" alt="SmartPage Logo" class="brand-img">
-            <div class="brand-title">SmartPage</div>
-            <div class="brand-desc">Content Management System</div>
+            <img src="images/Logo.png" alt="Inspira Logo" class="brand-img" style="width:250px;height:250px;margin-bottom:8px;object-fit:contain;background:transparent;filter:drop-shadow(0 2px 16px rgba(0,0,0,0.08));">
+            <div class="brand-title" style="font-size:54px;color:#fff;font-weight:900;letter-spacing:3px;margin-bottom:8px;text-shadow:0 2px 12px rgba(0,0,0,0.10);">Inspira</div>
+            <div class="brand-tagline" style="color:#fff;font-size:18px;font-weight:500;opacity:0.98;margin-bottom:10px;text-align:center;max-width:340px;text-shadow:0 2px 12px rgba(0,0,0,0.10);">
+                Platform CMS modern untuk mengelola, membagikan, dan menginspirasi dunia dengan konten Anda.
+            </div>
         </div>
         <div class="right-panel">
             <div class="register-container">
@@ -204,12 +208,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="form-label">PASSWORD</div>
                     <div class="input-group">
                         <input type="password" class="form-control" name="password" id="password" required>
-                        <span class="show-password" onclick="togglePassword('password', 'eye-icon1')"><i class="fas fa-eye" id="eye-icon1"></i></span>
+                        <span class="show-password" onclick="togglePassword('password', 'eye-icon1')">
+                          <i class="fas fa-eye" id="eye-icon1"></i>
+                        </span>
                     </div>
                     <div class="form-label">CONFIRM PASSWORD</div>
                     <div class="input-group">
                         <input type="password" class="form-control" name="confirm_password" id="confirm_password" required>
-                        <span class="show-password" onclick="togglePassword('confirm_password', 'eye-icon2')"><i class="fas fa-eye" id="eye-icon2"></i></span>
+                        <span class="show-password" onclick="togglePassword('confirm_password', 'eye-icon2')">
+                          <i class="fas fa-eye" id="eye-icon2"></i>
+                        </span>
                     </div>
                     <button type="submit" class="btn-register">REGISTER</button>
                 </form>

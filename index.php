@@ -1,381 +1,479 @@
-<?php
-session_start();
-require_once 'config/database.php';
-require_once 'includes/functions.php';
-
-// Cek apakah user sudah login
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
-
-// Ambil data user
-$user_id = $_SESSION['user_id'];
-$user = getUserById($user_id);
-
-// Ambil data posts
-$posts = getAllPosts();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPage</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Dashboard - Inspira</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #1e90ff;
-            --secondary: #a8edea;
-            --purple: #a084e8;
-            --green: #4fd1c5;
-            --blue: #4f8cff;
-            --light: #f8fafd;
-            --text: #222;
-            --sidebar: #fff;
-            --sidebar-border: #e6e6e6;
-        }
         body {
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text);
             margin: 0;
-        }
-        .dashboard-wrapper {
-            display: flex;
-            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7f9fb;
+            color: #222;
         }
         .sidebar {
-            width: 240px;
-            background: var(--sidebar);
-            border-right: 1px solid var(--sidebar-border);
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            width: 220px;
+            background: #fff;
+            border-right: 1px solid #eaeaea;
+            padding: 32px 0 0 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 32px 0 0 0;
+            z-index: 100;
+            height: 100vh;
         }
-        .sidebar-logo {
-            width: 56px;
-            height: 56px;
-            margin-bottom: 12px;
-        }
-        .sidebar-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 32px;
-        }
-        .sidebar-menu {
-            width: 100%;
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar-menu li {
-            width: 100%;
-        }
-        .sidebar-menu a {
+        .sidebar .logo {
             display: flex;
             align-items: center;
-            padding: 12px 32px;
-            color: var(--text);
-            text-decoration: none;
-            font-size: 16px;
-            border-left: 4px solid transparent;
-            transition: background 0.2s, border-color 0.2s;
+            padding: 0 32px 32px 32px;
         }
-        .sidebar-menu a.active, .sidebar-menu a:hover {
-            background: var(--secondary);
-            border-left: 4px solid var(--primary);
-            color: var(--primary);
+        .sidebar .logo img {
+            width: 38px; height: 38px; margin-right: 12px;
         }
-        .sidebar-menu i {
-            margin-right: 12px;
-            font-size: 18px;
+        .sidebar .logo span {
+            font-size: 22px;
+            font-weight: 800;
+            color: #7b2ff2;
+            letter-spacing: 1px;
         }
-        .main-content {
+        .sidebar nav {
             flex: 1;
-            background: var(--light);
-            padding: 32px 40px 32px 40px;
         }
-        .dashboard-header {
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar nav ul li {
+            margin-bottom: 6px;
+        }
+        .sidebar nav ul li a {
+            display: flex;
+            align-items: center;
+            padding: 10px 32px;
+            color: #222;
+            text-decoration: none;
+            font-size: 15px;
+            border-left: 3px solid transparent;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .sidebar nav ul li a.active, .sidebar nav ul li a:hover {
+            background: #f2f6ff;
+            border-left: 3px solid #7b2ff2;
+            color: #7b2ff2;
+        }
+        .sidebar nav ul li a i {
+            margin-right: 14px;
+            font-size: 17px;
+        }
+        .sidebar .sidebar-footer {
+            padding: 24px 32px 0 32px;
+            font-size: 13px;
+            color: #aaa;
+        }
+        .main {
+            margin-left: 220px;
+            min-height: 100vh;
+            background: #f7f9fb;
+        }
+        .topbar {
+            height: 64px;
+            background: #fff;
+            border-bottom: 1px solid #eaeaea;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 32px;
+            padding: 0 36px 0 36px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        .search-bar {
-            background: #fff;
-            border-radius: 24px;
-            padding: 10px 24px;
-            border: 1px solid #e6e6e6;
+        .topbar .search {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .topbar .search input {
             width: 320px;
+            padding: 10px 16px 10px 36px;
+            border-radius: 6px;
+            border: 1px solid #eaeaea;
+            background: #f7f9fb;
             font-size: 15px;
             outline: none;
+            margin-right: 24px;
         }
-        .user-avatar {
-            width: 44px;
-            height: 44px;
+        .topbar .search i {
+            position: absolute;
+            margin-left: 12px;
+            color: #bbb;
+            font-size: 16px;
+        }
+        .topbar .actions {
+            display: flex;
+            align-items: center;
+        }
+        .topbar .actions i {
+            font-size: 18px;
+            color: #888;
+            margin-right: 22px;
+            cursor: pointer;
+        }
+        .topbar .avatar {
+            width: 36px; height: 36px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--primary);
+            border: 2px solid #eaeaea;
         }
-        .stat-grid {
+        .dashboard-content {
+            padding: 36px 36px 0 36px;
+        }
+        .dashboard-content h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+        }
+        .dashboard-content .welcome {
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 28px;
+        }
+        .cards {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
             margin-bottom: 32px;
         }
-        .stat-card {
+        .card {
             background: #fff;
-            border-radius: 12px;
-            padding: 28px 32px 24px 32px;
-            box-shadow: 0 2px 8px 0 rgba(30,144,255,0.06);
+            border-radius: 14px;
+            box-shadow: 0 2px 12px 0 rgba(123,47,242,0.04);
+            padding: 22px 24px 18px 24px;
             display: flex;
             flex-direction: column;
             min-width: 0;
         }
-        .stat-title {
+        .card .card-title {
             font-size: 15px;
             color: #888;
+            font-weight: 600;
             margin-bottom: 8px;
         }
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 4px;
+        .card .card-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #222;
+            margin-bottom: 6px;
         }
-        .stat-desc {
+        .card .card-desc {
             font-size: 13px;
             color: #aaa;
         }
-        .stat-blue { background: var(--blue); color: #fff; }
-        .stat-cyan { background: #6edff6; color: #fff; }
-        .stat-purple { background: var(--purple); color: #fff; }
-        .stat-green { background: var(--green); color: #fff; }
-        .chart-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 24px;
+        .card .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #f2f2f2;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            overflow: hidden;
         }
-        .chart-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 24px 24px 16px 24px;
-            box-shadow: 0 2px 8px 0 rgba(30,144,255,0.06);
+        .card .progress {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #22c1c3 0%, #7b2ff2 100%);
         }
-        .chart-title {
-            font-size: 15px;
-            color: #888;
+        .card .progress.progress-yellow {
+            background: linear-gradient(90deg, #f7971e 0%, #ffd200 100%);
+        }
+        .card .progress.progress-pink {
+            background: linear-gradient(90deg, #f953c6 0%, #b91d73 100%);
+        }
+        .card .progress.progress-green {
+            background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+        }
+        .card .mini-chart {
+            width: 100%;
+            height: 36px;
+            margin-top: 8px;
+            background: #f7f9fb;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+        .card .mini-chart-bar {
+            width: 12%;
+            background: #7b2ff2;
+            margin-right: 2px;
+            border-radius: 2px 2px 0 0;
+        }
+        .card .mini-chart-bar.yellow { background: #ffd200; }
+        .card .mini-chart-bar.green { background: #43e97b; }
+        .card .mini-chart-bar.pink { background: #f953c6; }
+        .card .mini-chart-bar.blue { background: #22c1c3; }
+        .summary-card {
+            grid-column: span 2;
+            min-width: 0;
+        }
+        .summary-chart {
+            width: 100%;
+            height: 180px;
+        }
+        .upcoming-tasks {
+            margin-top: 18px;
+        }
+        .upcoming-tasks ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .upcoming-tasks li {
+            display: flex;
+            align-items: flex-start;
             margin-bottom: 12px;
         }
-        .chart-bar {
-            width: 100%;
-            height: 120px;
-            background: repeating-linear-gradient(90deg, #a084e8 0 8px, transparent 8px 16px);
-            margin-bottom: 8px;
-        }
-        .chart-donut {
-            width: 90px;
-            height: 90px;
+        .upcoming-tasks .dot {
+            width: 8px; height: 8px;
             border-radius: 50%;
-            background: conic-gradient(var(--primary) 0% 67%, #e6e6e6 67% 100%);
-            margin: 0 auto 8px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 20px;
+            background: #7b2ff2;
+            margin-right: 12px;
+            margin-top: 7px;
         }
-        .chart-donut2 {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: conic-gradient(var(--purple) 0% 48%, #e6e6e6 48% 100%);
-            margin: 0 auto 8px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--purple);
-            font-size: 20px;
+        .upcoming-tasks .task-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #222;
         }
-        .chart-label {
-            text-align: center;
+        .upcoming-tasks .task-desc {
             font-size: 13px;
             color: #888;
         }
-        @media (max-width: 900px) {
-            .dashboard-wrapper { flex-direction: column; }
-            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--sidebar-border); flex-direction: row; justify-content: center; }
-            .main-content { padding: 24px 8px; }
-            .stat-grid, .chart-row { grid-template-columns: 1fr; }
+        @media (max-width: 1100px) {
+            .sidebar { width: 60px; }
+            .main { margin-left: 60px; }
+            .sidebar .logo span { display: none; }
+            .sidebar nav ul li a span { display: none; }
+            .sidebar nav ul li a { justify-content: center; }
+            .sidebar .sidebar-footer { display: none; }
         }
-        .has-dropdown > a { position: relative; }
-        .dropdown-arrow { margin-left: auto; font-size: 12px; }
-        .submenu {
-            display: none;
-            background: #f4f8fb;
-            padding-left: 0;
-            margin: 0;
-            list-style: none;
-        }
-        .submenu li a {
-            padding: 10px 48px;
-            font-size: 15px;
-            color: #666;
-            display: block;
-            border-left: 4px solid transparent;
-            transition: background 0.2s, border-color 0.2s;
-        }
-        .submenu li a:hover, .submenu li a.active {
-            background: #eaf3fb;
-            color: var(--primary);
-            border-left: 4px solid var(--primary);
+        @media (max-width: 700px) {
+            .main { margin-left: 0; }
+            .sidebar { display: none; }
+            .dashboard-content { padding: 16px; }
+            .topbar { padding: 0 12px; }
         }
     </style>
 </head>
 <body>
-<div class="dashboard-wrapper">
     <div class="sidebar">
-        <img src="https://cdn-icons-png.flaticon.com/512/2721/2721723.png" alt="Logo" class="sidebar-logo">
-        <div class="sidebar-title">SmartPage</div>
-        <ul class="sidebar-menu">
-            <li class="has-dropdown">
-                <a href="#" onclick="toggleDropdown(event, 'dashboard')"><i class="fas fa-home"></i> Dashboard <span class="dropdown-arrow">&#9662;</span></a>
-                <ul class="submenu" id="dropdown-dashboard">
-                    <li><a href="#" onclick="showContent('classic')">Classic</a></li>
-                    <li><a href="#" onclick="showContent('minimal')">Minimal</a></li>
-                </ul>
-            </li>
-            <li class="has-dropdown">
-                <a href="#" onclick="toggleDropdown(event, 'pages')"><i class="fas fa-copy"></i> Pages <span class="dropdown-arrow">&#9662;</span></a>
-                <ul class="submenu" id="dropdown-pages">
-                    <li><a href="#" onclick="showContent('about')">About</a></li>
-                    <li><a href="#" onclick="showContent('contact')">Contact</a></li>
-                </ul>
-            </li>
-            <li class="has-dropdown">
-                <a href="#" onclick="toggleDropdown(event, 'applications')"><i class="fas fa-th-list"></i> Applications <span class="dropdown-arrow">&#9662;</span></a>
-                <ul class="submenu" id="dropdown-applications">
-                    <li><a href="#" onclick="showContent('calendar')">Calendar</a></li>
-                    <li><a href="#" onclick="showContent('mail')">Mail</a></li>
-                </ul>
-            </li>
-            <li class="has-dropdown">
-                <a href="#" onclick="toggleDropdown(event, 'ui')"><i class="fas fa-puzzle-piece"></i> UI Component <span class="dropdown-arrow">&#9662;</span></a>
-                <ul class="submenu" id="dropdown-ui">
-                    <li><a href="#" onclick="showContent('buttons')">Buttons</a></li>
-                    <li><a href="#" onclick="showContent('alerts')">Alerts</a></li>
-                </ul>
-            </li>
-            <li class="has-dropdown">
-                <a href="#" onclick="toggleDropdown(event, 'widgets')"><i class="fas fa-layer-group"></i> Widgets <span class="dropdown-arrow">&#9662;</span></a>
-                <ul class="submenu" id="dropdown-widgets">
-                    <li><a href="#" onclick="showContent('widget1')">Widget 1</a></li>
-                    <li><a href="#" onclick="showContent('widget2')">Widget 2</a></li>
-                </ul>
-            </li>
-            <li class="has-dropdown">
-                <a href="#" onclick="toggleDropdown(event, 'forms')"><i class="fas fa-pen-square"></i> Forms <span class="dropdown-arrow">&#9662;</span></a>
-                <ul class="submenu" id="dropdown-forms">
-                    <li><a href="#" onclick="showContent('form1')">Form 1</a></li>
-                    <li><a href="#" onclick="showContent('form2')">Form 2</a></li>
-                </ul>
-            </li>
-            <li class="has-dropdown">
-                <a href="#" onclick="toggleDropdown(event, 'charts')"><i class="fas fa-chart-bar"></i> Charts <span class="dropdown-arrow">&#9662;</span></a>
-                <ul class="submenu" id="dropdown-charts">
-                    <li><a href="#" onclick="showContent('chart1')">Chart 1</a></li>
-                    <li><a href="#" onclick="showContent('chart2')">Chart 2</a></li>
-                </ul>
-            </li>
-            <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
+        <div class="logo">
+            <img src="images/Logo.png" alt="Inspira Logo">
+            <span>Inspira</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+                <li><a href="#"><i class="far fa-calendar-alt"></i> <span>Calendar</span></a></li>
+                <li><a href="#"><i class="fas fa-users"></i> <span>Users</span></a></li>
+                <li><a href="#"><i class="fas fa-envelope"></i> <span>Messages</span></a></li>
+                <li><a href="#"><i class="fas fa-mail-bulk"></i> <span>Email</span></a></li>
+                <li><a href="#"><i class="fas fa-puzzle-piece"></i> <span>Components</span></a></li>
+                <li><a href="#"><i class="fas fa-plug"></i> <span>Plugins</span></a></li>
+                <li><a href="#"><i class="fas fa-wpforms"></i> <span>Form</span></a></li>
+                <li><a href="#"><i class="fas fa-table"></i> <span>Tables</span></a></li>
+                <li><a href="#"><i class="fas fa-chart-bar"></i> <span>Charts</span></a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            &copy; 2024 Inspira CMS
+        </div>
     </div>
-    <div class="main-content" id="main-content">
-        <!-- Konten default dashboard -->
-        <div id="content-default">
-            <div class="dashboard-header">
-                <input class="search-bar" placeholder="Search here..." />
-                <div style="display:flex;align-items:center;gap:18px;">
-                    <span style="font-size:22px;color:#bbb;cursor:pointer;"><i class="far fa-bell"></i></span>
-                    <span style="font-size:22px;color:#bbb;cursor:pointer;"><i class="far fa-comment-dots"></i></span>
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="user-avatar" alt="User">
-                </div>
+    <div class="main">
+        <div class="topbar">
+            <div class="search" style="position:relative;">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search components...">
             </div>
-            <div class="stat-grid">
-                <div class="stat-card stat-blue">
-                    <div class="stat-title">Total Income</div>
-                    <div class="stat-value">$ 579,000</div>
-                    <div class="stat-desc">Saved 25%</div>
-                </div>
-                <div class="stat-card stat-cyan">
-                    <div class="stat-title">Total Expenses</div>
-                    <div class="stat-value">$ 79,000</div>
-                    <div class="stat-desc">Saved 25%</div>
-                </div>
-                <div class="stat-card stat-purple">
-                    <div class="stat-title">Cash on Hand</div>
-                    <div class="stat-value">$ 92,000</div>
-                    <div class="stat-desc">Saved 25%</div>
-                </div>
-                <div class="stat-card stat-green">
-                    <div class="stat-title">Net Profit Margin</div>
-                    <div class="stat-value">$ 179,000</div>
-                    <div class="stat-desc">Saved 65%</div>
-                </div>
-            </div>
-            <div class="chart-row">
-                <div class="chart-card">
-                    <div class="chart-title">AP and AR Balance</div>
-                    <div class="chart-bar"></div>
-                    <div class="chart-label">Monthly &nbsp; | &nbsp; Last Year</div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">% of Income Budget</div>
-                    <div class="chart-donut">67%</div>
-                    <div class="chart-label">Budget</div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">% of Expenses Budget</div>
-                    <div class="chart-donut2">48%</div>
-                    <div class="chart-label">Profit</div>
+            <div class="actions" style="position:relative;">
+                <i class="far fa-bell"></i>
+                <i class="far fa-user-circle" id="avatarDropdown" style="font-size:32px;cursor:pointer;"></i>
+                <div id="dropdownMenu" style="display:none;position:absolute;right:0;top:48px;background:#fff;border:1px solid #eaeaea;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.06);min-width:140px;z-index:100;">
+                    <a href="logout.php" style="display:block;padding:12px 18px;color:#222;text-decoration:none;font-size:15px;">Logout <i class="fas fa-sign-out-alt" style="float:right;"></i></a>
                 </div>
             </div>
         </div>
-        <!-- Konten dinamis -->
-        <div id="content-classic" style="display:none"><h2>Classic Dashboard</h2><p>Ini adalah tampilan Classic Dashboard.</p></div>
-        <div id="content-minimal" style="display:none"><h2>Minimal Dashboard</h2><p>Ini adalah tampilan Minimal Dashboard.</p></div>
-        <div id="content-about" style="display:none"><h2>About Page</h2><p>Ini adalah halaman About.</p></div>
-        <div id="content-contact" style="display:none"><h2>Contact Page</h2><p>Ini adalah halaman Contact.</p></div>
-        <div id="content-calendar" style="display:none"><h2>Calendar Application</h2><p>Ini adalah aplikasi Calendar.</p></div>
-        <div id="content-mail" style="display:none"><h2>Mail Application</h2><p>Ini adalah aplikasi Mail.</p></div>
-        <div id="content-buttons" style="display:none"><h2>UI Buttons</h2><p>Ini adalah komponen UI Buttons.</p></div>
-        <div id="content-alerts" style="display:none"><h2>UI Alerts</h2><p>Ini adalah komponen UI Alerts.</p></div>
-        <div id="content-widget1" style="display:none"><h2>Widget 1</h2><p>Ini adalah Widget 1.</p></div>
-        <div id="content-widget2" style="display:none"><h2>Widget 2</h2><p>Ini adalah Widget 2.</p></div>
-        <div id="content-form1" style="display:none"><h2>Form 1</h2><p>Ini adalah Form 1.</p></div>
-        <div id="content-form2" style="display:none"><h2>Form 2</h2><p>Ini adalah Form 2.</p></div>
-        <div id="content-chart1" style="display:none"><h2>Chart 1</h2><p>Ini adalah Chart 1.</p></div>
-        <div id="content-chart2" style="display:none"><h2>Chart 2</h2><p>Ini adalah Chart 2.</p></div>
+        <div class="dashboard-content">
+            <h2>Dashboard</h2>
+            <div class="welcome">Welcome aboard, Jacqueline Reid</div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-title">Your status</div>
+                    <div class="card-value">Pro user</div>
+                    <div class="card-desc">&nbsp;</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Your balance</div>
+                    <div class="card-value">$3,500</div>
+                    <div class="card-desc">Next payment <b>15 Nov</b></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Total Sale & Referral</div>
+                    <div class="card-value">39,500 <span style="font-size:13px;color:#aaa;">usd</span></div>
+                    <div class="card-desc">&nbsp;</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Your top countries</div>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <img src="https://i.ibb.co/6bQ7QpT/world-map.png" alt="Map" style="height:38px;">
+                        <div style="font-size:13px;">
+                            <b>USA</b> $1,250<br>
+                            <b>UK</b> $650<br>
+                            <b>India</b> $200
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Profile complete: <span style="color:#1e90ff;font-weight:700;">65%</span></div>
+                    <div class="progress-bar"><div class="progress" style="width:65%"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Payment process: <span style="color:#f7971e;font-weight:700;">25%</span></div>
+                    <div class="progress-bar"><div class="progress progress-yellow" style="width:25%"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">30% Conversion</div>
+                    <div class="mini-chart">
+                        <div class="mini-chart-bar" style="height:60%"></div>
+                        <div class="mini-chart-bar yellow" style="height:40%"></div>
+                        <div class="mini-chart-bar green" style="height:70%"></div>
+                        <div class="mini-chart-bar pink" style="height:30%"></div>
+                        <div class="mini-chart-bar blue" style="height:50%"></div>
+                        <div class="mini-chart-bar" style="height:60%"></div>
+                        <div class="mini-chart-bar yellow" style="height:40%"></div>
+                        <div class="mini-chart-bar green" style="height:70%"></div>
+                    </div>
+                    <div class="card-desc">+3.5%</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">25% Search engine</div>
+                    <div class="mini-chart">
+                        <div class="mini-chart-bar blue" style="height:30%"></div>
+                        <div class="mini-chart-bar pink" style="height:60%"></div>
+                        <div class="mini-chart-bar yellow" style="height:40%"></div>
+                        <div class="mini-chart-bar green" style="height:70%"></div>
+                        <div class="mini-chart-bar" style="height:50%"></div>
+                        <div class="mini-chart-bar blue" style="height:30%"></div>
+                        <div class="mini-chart-bar pink" style="height:60%"></div>
+                        <div class="mini-chart-bar yellow" style="height:40%"></div>
+                    </div>
+                    <div class="card-desc">-2.0%</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">45% Directly</div>
+                    <div class="mini-chart">
+                        <div class="mini-chart-bar green" style="height:45%"></div>
+                        <div class="mini-chart-bar pink" style="height:55%"></div>
+                        <div class="mini-chart-bar yellow" style="height:35%"></div>
+                        <div class="mini-chart-bar blue" style="height:65%"></div>
+                        <div class="mini-chart-bar" style="height:50%"></div>
+                        <div class="mini-chart-bar green" style="height:45%"></div>
+                        <div class="mini-chart-bar pink" style="height:55%"></div>
+                        <div class="mini-chart-bar yellow" style="height:35%"></div>
+                    </div>
+                    <div class="card-desc">+4.5%</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Weekly top sell</div>
+                    <div class="card-value" style="color:#43e97b;">+2.50%</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Task statistics</div>
+                    <div class="card-value">52 <span style="font-size:13px;color:#aaa;">Tasks</span></div>
+                    <div class="card-desc" style="color:#f953c6;font-weight:700;">+15 Added</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">This week</div>
+                    <div class="card-desc">Task completion</div>
+                    <div class="progress-bar"><div class="progress progress-pink" style="width:65%"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Weekly</div>
+                    <div class="card-value">35%</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Monthly</div>
+                    <div class="card-value">25%</div>
+                </div>
+                <div class="card summary-card">
+                    <div class="card-title">Summary</div>
+                    <canvas class="summary-chart" id="summaryChart"></canvas>
+                </div>
+                <div class="card summary-card">
+                    <div class="card-title">Upcoming tasks <span style="font-size:13px;color:#aaa;">Active: 9</span></div>
+                    <div class="upcoming-tasks">
+                        <ul>
+                            <li><span class="dot"></span><div><div class="task-title">Database management</div><div class="task-desc">Managing data in all software or...</div></div></li>
+                            <li><span class="dot"></span><div><div class="task-title">Open source project public release</div><div class="task-desc">New out-of-the-box dashboards and...</div></div></li>
+                            <li><span class="dot"></span><div><div class="task-title">eBay Dashboard</div><div class="task-desc">This makes me believe there are good...</div></div></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<script>
-function toggleDropdown(e, id) {
-    e.preventDefault();
-    document.querySelectorAll('.submenu').forEach(function(el){ el.style.display = 'none'; });
-    var menu = document.getElementById('dropdown-' + id);
-    if(menu) menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-}
-function showContent(id) {
-    document.querySelectorAll('[id^=content-]').forEach(function(el){ el.style.display = 'none'; });
-    var el = document.getElementById('content-' + id);
-    if(el) el.style.display = 'block';
-}
-// Default: tampilkan dashboard
-showContent('default');
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Simple summary chart
+        var ctx = document.getElementById('summaryChart').getContext('2d');
+        var summaryChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'Mentions',
+                        data: [40, 55, 60, 70, 60, 80, 90, 100, 110, 95, 105, 120],
+                        borderColor: '#7b2ff2',
+                        backgroundColor: 'rgba(123,47,242,0.08)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Tasks',
+                        data: [30, 40, 50, 60, 70, 80, 85, 90, 100, 110, 115, 130],
+                        borderColor: '#22c1c3',
+                        backgroundColor: 'rgba(34,193,195,0.08)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        // Avatar dropdown
+        const avatar = document.getElementById('avatarDropdown');
+        const dropdown = document.getElementById('dropdownMenu');
+        avatar.addEventListener('click', function(e) {
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+        document.addEventListener('click', function(e) {
+            if (!avatar.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
 </body>
-</html> 
+</html>

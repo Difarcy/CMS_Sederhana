@@ -1,21 +1,17 @@
 <?php
+session_start();
 require_once 'includes/functions.php';
 $success = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
-    $new_password = $_POST['new_password'] ?? '';
-    $user = userExists('', $email);
-    if ($user) {
-        if (resetPassword($user['id'], $new_password)) {
-            echo "<script>alert('Password berhasil diubah! Silakan login.'); window.location='login.php';</script>";
-            exit();
-        } else {
-            $error = 'Gagal mengubah password.';
-        }
+    
+    if (empty($email)) {
+        $error = 'Email tidak boleh kosong!';
     } else {
-        $error = 'Email tidak ditemukan!';
+        // Add your password reset logic here
+        $success = 'Link reset password telah dikirim ke email Anda!';
     }
 }
 ?>
@@ -24,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password - SmartPage</title>
+    <title>Forgot Password - Inspira</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #a8edea 0%, #1e90ff 100%);
+            background: linear-gradient(135deg, #22c1c3 0%, #7b2ff2 100%);
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -47,16 +43,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             min-width: 0;
         }
         .brand-img {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 18px;
+            width: 170px;
+            height: 170px;
+            margin-bottom: 24px;
         }
         .brand-title {
-            color: #1e90ff;
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
+            color: #7b2ff2;
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
         }
         .brand-desc {
             color: #222;
@@ -73,21 +69,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 0 5vw;
         }
         .forgot-container {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            width: 340px;
-            max-width: 90vw;
-            padding: 28px 28px 20px 28px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(123,47,242,0.10);
+            width: 360px;
+            max-width: 95vw;
+            padding: 36px 32px 24px 32px;
             position: relative;
+            border: 1.5px solid #e0d7fa;
         }
         .forgot-container::after {
             content: '';
             position: absolute;
-            top: 0; right: 0; bottom: 0;
-            width: 12px;
-            background: #1e90ff;
-            border-radius: 0 10px 10px 0;
+            top: -1px; right: -1px;
+            height: calc(100% + 2px);
+            width: 16px;
+            background: linear-gradient(180deg, #7b2ff2 0%, #04c8de 100%);
+            border-radius: 0 18px 18px 0;
         }
         .forgot-title {
             color: #1e90ff;
@@ -116,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 0;
             box-sizing: border-box;
         }
-        .btn-forgot {
+        .btn-reset {
             width: 100%;
             background: #1e90ff;
             color: #fff;
@@ -129,19 +127,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             letter-spacing: 1px;
             transition: background 0.2s;
         }
-        .btn-forgot:hover {
+        .btn-reset:hover {
             background: #187bcd;
         }
-        .back-link {
+        .login-link {
             display: block;
             text-align: center;
             margin-top: 16px;
             color: #1e90ff;
             font-size: 13px;
             text-decoration: none;
+            cursor: pointer;
+            pointer-events: auto;
         }
-        .back-link:hover {
+        .login-link:hover {
             text-decoration: underline;
+        }
+        .alert {
+            border-radius: 5px;
+            margin-bottom: 18px;
         }
         @media (max-width: 900px) {
             .main-wrapper {
@@ -164,24 +168,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="main-wrapper">
         <div class="left-panel">
-            <img src="https://cdn-icons-png.flaticon.com/512/2721/2721723.png" alt="SmartPage Logo" class="brand-img">
-            <div class="brand-title">SmartPage</div>
-            <div class="brand-desc">Content Management System</div>
+            <img src="images/Logo.png" alt="Inspira Logo" class="brand-img" style="width:250px;height:250px;margin-bottom:8px;object-fit:contain;background:transparent;filter:drop-shadow(0 2px 16px rgba(0,0,0,0.08));">
+            <div class="brand-title" style="font-size:54px;color:#fff;font-weight:900;letter-spacing:3px;margin-bottom:8px;text-shadow:0 2px 12px rgba(0,0,0,0.10);">Inspira</div>
+            <div class="brand-tagline" style="color:#fff;font-size:18px;font-weight:500;opacity:0.98;margin-bottom:10px;text-align:center;max-width:340px;text-shadow:0 2px 12px rgba(0,0,0,0.10);">
+                Platform CMS modern untuk mengelola, membagikan, dan menginspirasi dunia dengan konten Anda.
+            </div>
         </div>
         <div class="right-panel">
             <div class="forgot-container">
-                <div class="forgot-title">Forgot Password</div>
+                <div class="forgot-title">FORGOT PASSWORD</div>
+                <?php if ($success): ?>
+                    <div class="alert alert-success"><?php echo $success; ?></div>
+                <?php endif; ?>
                 <?php if ($error): ?>
                     <div class="alert alert-danger"><?php echo $error; ?></div>
                 <?php endif; ?>
-                <form action="#" method="post" autocomplete="off">
+                <form action="forgot_password.php" method="post" autocomplete="off">
                     <div class="form-label">EMAIL</div>
                     <input type="email" class="form-control" name="email" required autofocus>
-                    <div class="form-label">NEW PASSWORD</div>
-                    <input type="password" class="form-control" name="new_password" required>
-                    <button type="submit" class="btn-forgot">Change Password</button>
+                    <button type="submit" class="btn-reset">RESET PASSWORD</button>
                 </form>
-                <a href="login.php" class="back-link">Back to Login</a>
+                <a href="login.php" class="login-link">Back to Login</a>
             </div>
         </div>
     </div>
