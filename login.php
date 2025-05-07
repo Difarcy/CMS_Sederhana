@@ -29,104 +29,235 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SmartPage</title>
-    <!-- AdminLTE CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-    <!-- Font Awesome -->
+    <title>Account Login - SmartPage</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #FFD700 0%, #1E90FF 100%);
+            min-height: 100vh;
+            background: linear-gradient(135deg, #a8edea 0%, #1e90ff 100%);
+            margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .login-box {
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        .main-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .left-panel {
+            flex: 1;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+        .brand-img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 18px;
+        }
+        .brand-title {
+            color: #1e90ff;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        .brand-desc {
+            color: #222;
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+        .right-panel {
+            flex: 0 0 400px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            min-width: 340px;
+            padding: 0 5vw;
+        }
+        .login-container {
+            background: #fff;
             border-radius: 10px;
-            overflow: hidden;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            width: 340px;
+            max-width: 90vw;
+            padding: 28px 28px 20px 28px;
+            position: relative;
         }
-        .login-logo {
-            color: #000000;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        .login-container::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0;
+            width: 12px;
+            background: #1e90ff;
+            border-radius: 0 10px 10px 0;
         }
-        .login-card-body {
-            background: white;
-            border-radius: 10px;
+        .login-title {
+            color: #1e90ff;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
         }
-        .btn-primary {
-            background: #1E90FF;
-            border: none;
-            padding: 10px 20px;
-            font-weight: 500;
-            color: #000000;
-        }
-        .btn-primary:hover {
-            background: #187bcd;
-        }
-        .input-group-text {
-            background: #FFD700;
-            border: none;
-            color: #000000;
+        .form-label {
+            font-size: 13px;
+            color: #1e90ff;
+            font-weight: 600;
+            margin-bottom: 5px;
+            margin-top: 10px;
+            letter-spacing: 1px;
         }
         .form-control {
+            width: 100%;
+            height: 40px;
             border: none;
-            border-bottom: 2px solid #FFD700;
-            padding: 10px;
-            color: #000000;
+            background: #f2f2f2;
+            border-radius: 4px;
+            padding: 0 16px;
+            font-size: 15px;
+            color: #222;
+            margin-bottom: 0;
+            box-sizing: border-box;
         }
-        .form-control:focus {
-            box-shadow: none;
-            border-bottom-color: #1E90FF;
+        .input-group {
+            position: relative;
+            margin-bottom: 22px;
         }
-        .login-box-msg {
-            color: #000000;
+        .show-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #aaa;
+            font-size: 18px;
+            z-index: 2;
+        }
+        .form-check-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .form-check-label {
+            font-size: 13px;
+            color: #888;
+            margin-left: 5px;
+        }
+        .forgot-link {
+            font-size: 13px;
+            color: #1e90ff;
+            text-decoration: none;
+            margin-top: 0;
+            margin-left: 12px;
+        }
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+        .btn-login {
+            width: 100%;
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            height: 42px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 18px;
+            letter-spacing: 1px;
+            transition: background 0.2s;
+        }
+        .btn-login:hover {
+            background: #187bcd;
+        }
+        .register-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: #1e90ff;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .register-link:hover {
+            text-decoration: underline;
+        }
+        .alert {
+            border-radius: 5px;
+            margin-bottom: 18px;
+        }
+        @media (max-width: 900px) {
+            .main-wrapper {
+                flex-direction: column;
+            }
+            .left-panel, .right-panel {
+                flex: unset;
+                width: 100%;
+                min-width: 0;
+                justify-content: center;
+                padding: 0;
+            }
+            .right-panel {
+                margin-top: 24px;
+                padding-bottom: 24px;
+            }
         }
     </style>
 </head>
-<body class="hold-transition login-page">
-    <div class="login-box">
-        <div class="login-logo">
-            <a href="index.php"><b>CMS</b> Sederhana</a>
+<body>
+    <div class="main-wrapper">
+        <div class="left-panel">
+            <img src="https://cdn-icons-png.flaticon.com/512/2721/2721723.png" alt="SmartPage Logo" class="brand-img">
+            <div class="brand-title">SmartPage</div>
+            <div class="brand-desc">Content Management System</div>
         </div>
-        <div class="card">
-            <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
-
+        <div class="right-panel">
+            <div class="login-container">
+                <div class="login-title">ACCOUNT LOGIN</div>
                 <?php if ($error): ?>
                     <div class="alert alert-danger"><?php echo $error; ?></div>
                 <?php endif; ?>
-
-                <form action="login.php" method="post">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="username" placeholder="Username" required>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-user"></span>
-                            </div>
-                        </div>
+                <form action="login.php" method="post" autocomplete="off">
+                    <div class="form-label">USERNAME</div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="username" required autofocus>
                     </div>
-                    <div class="input-group mb-3">
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
+                    <div class="form-label">PASSWORD</div>
+                    <div class="input-group">
+                        <input type="password" class="form-control" name="password" id="password" required>
+                        <span class="show-password" onclick="togglePassword()"><i class="fas fa-eye" id="eye-icon"></i></span>
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                    <div class="form-check-row">
+                        <div style="display: flex; align-items: center;">
+                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">Remember Me</label>
                         </div>
+                        <a href="forgot_password.php" class="forgot-link">Forgot Password?</a>
                     </div>
+                    <button type="submit" class="btn-login">LOG IN</button>
                 </form>
+                <a href="register.php" class="register-link">Don't have an account?</a>
             </div>
         </div>
     </div>
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <script>
+        function togglePassword() {
+            var pwd = document.getElementById('password');
+            var icon = document.getElementById('eye-icon');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                pwd.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html> 
