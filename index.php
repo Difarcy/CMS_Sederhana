@@ -29,11 +29,11 @@ $posts = getAllPosts();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --text-color: #2c3e50;
-            --light-bg: #f8f9fa;
+            --primary-color: #FFD700;
+            --secondary-color: #1E90FF;
+            --accent-color: #FFD700;
+            --text-color: #000000;
+            --light-bg: #ffffff;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -44,11 +44,11 @@ $posts = getAllPosts();
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .navbar-brand {
-            color: white !important;
+            color: var(--text-color) !important;
             font-weight: 600;
         }
         .brand-text {
-            color: white !important;
+            color: var(--text-color) !important;
         }
         .content-wrapper {
             background: var(--light-bg);
@@ -62,26 +62,50 @@ $posts = getAllPosts();
             transform: translateY(-5px);
         }
         .card-header {
-            background: white;
+            background: var(--primary-color);
             border-bottom: 1px solid rgba(0,0,0,0.05);
+            color: var(--text-color);
         }
         .btn-primary {
             background: var(--secondary-color);
             border: none;
+            color: var(--text-color);
         }
         .btn-primary:hover {
-            background: #2980b9;
+            background: #187bcd;
         }
         .btn-danger {
             background: var(--accent-color);
             border: none;
+            color: var(--text-color);
         }
         .btn-danger:hover {
-            background: #c0392b;
+            background: #e6c200;
         }
         .main-footer {
             background: var(--primary-color);
-            color: white;
+            color: var(--text-color);
+        }
+        .sidebar-dark-primary {
+            background: var(--secondary-color) !important;
+        }
+        .nav-sidebar .nav-link {
+            color: var(--text-color) !important;
+        }
+        .nav-sidebar .nav-link.active {
+            background-color: var(--primary-color) !important;
+            color: var(--text-color) !important;
+        }
+        .small-box {
+            background: var(--primary-color) !important;
+            color: var(--text-color) !important;
+        }
+        .small-box .icon {
+            color: rgba(0, 0, 0, 0.15) !important;
+        }
+        .small-box-footer {
+            background: rgba(0, 0, 0, 0.1) !important;
+            color: var(--text-color) !important;
         }
     </style>
 </head>

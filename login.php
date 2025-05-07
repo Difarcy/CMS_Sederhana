@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            background: linear-gradient(135deg, #FFD700 0%, #1E90FF 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .login-box {
@@ -45,34 +45,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             overflow: hidden;
         }
         .login-logo {
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            color: #000000;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         .login-card-body {
             background: white;
             border-radius: 10px;
         }
         .btn-primary {
-            background: #3498db;
+            background: #1E90FF;
             border: none;
             padding: 10px 20px;
             font-weight: 500;
+            color: #000000;
         }
         .btn-primary:hover {
-            background: #2980b9;
+            background: #187bcd;
         }
         .input-group-text {
-            background: #f8f9fa;
+            background: #FFD700;
             border: none;
+            color: #000000;
         }
         .form-control {
             border: none;
-            border-bottom: 2px solid #e9ecef;
+            border-bottom: 2px solid #FFD700;
             padding: 10px;
+            color: #000000;
         }
         .form-control:focus {
             box-shadow: none;
-            border-bottom-color: #3498db;
+            border-bottom-color: #1E90FF;
+        }
+        .login-box-msg {
+            color: #000000;
         }
     </style>
 </head>
