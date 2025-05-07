@@ -1,3 +1,24 @@
+<?php
+require_once 'includes/functions.php';
+$success = '';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+    $user = userExists('', $email);
+    if ($user) {
+        if (resetPassword($user['id'], $new_password)) {
+            echo "<script>alert('Password berhasil diubah! Silakan login.'); window.location='login.php';</script>";
+            exit();
+        } else {
+            $error = 'Gagal mengubah password.';
+        }
+    } else {
+        $error = 'Email tidak ditemukan!';
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -150,10 +171,15 @@
         <div class="right-panel">
             <div class="forgot-container">
                 <div class="forgot-title">Forgot Password</div>
+                <?php if ($error): ?>
+                    <div class="alert alert-danger"><?php echo $error; ?></div>
+                <?php endif; ?>
                 <form action="#" method="post" autocomplete="off">
                     <div class="form-label">EMAIL</div>
                     <input type="email" class="form-control" name="email" required autofocus>
-                    <button type="submit" class="btn-forgot">Send Reset Link</button>
+                    <div class="form-label">NEW PASSWORD</div>
+                    <input type="password" class="form-control" name="new_password" required>
+                    <button type="submit" class="btn-forgot">Change Password</button>
                 </form>
                 <a href="login.php" class="back-link">Back to Login</a>
             </div>

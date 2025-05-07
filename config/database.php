@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'cms_sederhana';
+$dbname = 'csm_sederhana';
 $username = 'root';
 $password = '';
 

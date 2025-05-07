@@ -45,17 +45,24 @@ function deletePost($id) {
     return $stmt->execute([$id]);
 }
 
-// Fungsi untuk login
-function login($username, $password) {
+// Fungsi untuk login (username/email)
+function login($usernameOrEmail, $password) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$username]);
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
+    $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
     if ($user && password_verify($password, $user['password'])) {
         return $user;
     }
     return false;
+}
+
+// Fungsi untuk mengecek apakah username/email sudah ada
+function userExists($username, $email) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
+    $stmt->execute([$username, $email]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 // Fungsi untuk menambahkan user baru
@@ -64,6 +71,29 @@ function addUser($username, $password, $email) {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $pdo->prepare("INSERT INTO users (username, password, email, created_at) VALUES (?, ?, ?, NOW())");
     return $stmt->execute([$username, $hashed_password, $email]);
+}
+
+// Fungsi untuk memulai proses forgot password
+function setResetToken($email, $token, $expiry) {
+    global $pdo;
+    $stmt = $pdo->prepare("UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?");
+    return $stmt->execute([$token, $expiry, $email]);
+}
+
+// Fungsi untuk mendapatkan user berdasarkan reset token
+function getUserByResetToken($token) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE reset_token = ? AND reset_token_expiry > NOW()");
+    $stmt->execute([$token]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// Fungsi untuk reset password
+function resetPassword($userId, $newPassword) {
+    global $pdo;
+    $hashed_password = password_hash($newPassword, PASSWORD_DEFAULT);
+    $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+    return $stmt->execute([$hashed_password, $userId]);
 }
 
 // Fungsi untuk mendapatkan semua categories

@@ -1,3 +1,29 @@
+<?php
+session_start();
+require_once 'includes/functions.php';
+$success = '';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+
+    if ($password !== $confirm_password) {
+        $error = 'Password dan konfirmasi password tidak sama!';
+    } elseif (userExists($username, $email)) {
+        $error = 'Username atau email sudah terdaftar!';
+    } else {
+        if (addUser($username, $password, $email)) {
+            echo "<script>alert('Registrasi berhasil, silakan login!'); window.location='login.php';</script>";
+            exit();
+        } else {
+            $error = 'Registrasi gagal, silakan coba lagi.';
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -188,6 +214,9 @@
                     <button type="submit" class="btn-register">REGISTER</button>
                 </form>
                 <a href="login.php" class="login-link">Already have an account?</a>
+                <?php if ($error): ?>
+                    <div class="alert alert-danger" style="margin:24px auto 0 auto;text-align:center;"> <?php echo $error; ?> </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

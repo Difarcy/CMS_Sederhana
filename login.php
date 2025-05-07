@@ -3,23 +3,21 @@ session_start();
 require_once 'config/database.php';
 require_once 'includes/functions.php';
 
+$success = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
     
-    if (empty($username) || empty($password)) {
-        $error = 'Username dan password harus diisi';
+    $user = login($username, $password);
+    if ($user) {
+        $_SESSION['user_id'] = $user['id'];
+        $success = 'Login berhasil!';
+        header('Refresh:1; url=index.php');
+        exit();
     } else {
-        $user = login($username, $password);
-        if ($user) {
-            $_SESSION['user_id'] = $user['id'];
-            header('Location: index.php');
-            exit();
-        } else {
-            $error = 'Username atau password salah';
-        }
+        $error = 'Username/email atau password salah!';
     }
 }
 ?>
@@ -218,6 +216,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="right-panel">
             <div class="login-container">
                 <div class="login-title">ACCOUNT LOGIN</div>
+                <?php if ($success): ?>
+                    <div class="alert alert-success"><?php echo $success; ?></div>
+                <?php endif; ?>
                 <?php if ($error): ?>
                     <div class="alert alert-danger"><?php echo $error; ?></div>
                 <?php endif; ?>
