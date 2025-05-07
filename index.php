@@ -221,16 +221,25 @@ $posts = getAllPosts();
         <div class="sidebar-title">SmartPage</div>
         <ul class="sidebar-menu">
             <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Transactions</a></li>
-            <li><a href="#"><i class="fas fa-chart-pie"></i> Reports</a></li>
-            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="#"><i class="fas fa-th-large"></i> Classic</a></li>
+            <li><a href="#"><i class="fas fa-border-all"></i> Minimal</a></li>
+            <li><a href="#"><i class="fas fa-copy"></i> Pages</a></li>
+            <li><a href="#"><i class="fas fa-th-list"></i> Applications</a></li>
+            <li><a href="#"><i class="fas fa-puzzle-piece"></i> UI Component</a></li>
+            <li><a href="#"><i class="fas fa-layer-group"></i> Widgets</a></li>
+            <li><a href="#"><i class="fas fa-pen-square"></i> Forms</a></li>
+            <li><a href="#"><i class="fas fa-chart-bar"></i> Charts</a></li>
             <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </div>
     <div class="main-content">
         <div class="dashboard-header">
             <input class="search-bar" placeholder="Search here..." />
-            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="user-avatar" alt="User">
+            <div style="display:flex;align-items:center;gap:18px;">
+                <span style="font-size:22px;color:#bbb;cursor:pointer;"><i class="far fa-bell"></i></span>
+                <span style="font-size:22px;color:#bbb;cursor:pointer;"><i class="far fa-comment-dots"></i></span>
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="user-avatar" alt="User">
+            </div>
         </div>
         <div class="stat-grid">
             <div class="stat-card stat-blue">
