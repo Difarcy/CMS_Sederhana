@@ -14,10 +14,13 @@ $user = $db->getUserByUsername($_SESSION['username']);
 
 // Get site settings
 $settings = $db->getSettings();
-$site_title = 'Inspira';
+$site_title = $settings['site_title'] ?? 'Inspira';
 
 // Get current page for active menu
 $current_page = basename($_SERVER['PHP_SELF']);
+
+// Get all posts
+$posts = $db->getAllPosts();
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +28,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo $site_title; ?> - Dashboard</title>
+    <title><?php echo $site_title; ?> - Posts</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -128,7 +131,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Dashboard</h1>
+                        <h1 class="m-0">Posts</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="float-sm-right">
+                            <a href="post-new.php" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> New Post
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -137,90 +147,64 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <!-- Main content -->
         <div class="content">
             <div class="container-fluid">
-                <!-- Small boxes (Stat box) -->
-                <div class="row">
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3><?php echo $db->countPosts(); ?></h3>
-                                <p>Posts</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <a href="posts.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                <h3><?php echo $db->countCategories(); ?></h3>
-                                <p>Categories</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-folder"></i>
-                            </div>
-                            <a href="categories.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3><?php echo $db->countTags(); ?></h3>
-                                <p>Tags</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-tags"></i>
-                            </div>
-                            <a href="tags.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3><?php echo $db->countUsers(); ?></h3>
-                                <p>Users</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <a href="users.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
+                <?php if (isset($_SESSION['success'])): ?>
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <?php 
+                    echo $_SESSION['success'];
+                    unset($_SESSION['success']);
+                    ?>
                 </div>
+                <?php endif; ?>
 
-                <!-- Recent Posts -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Recent Posts</h3>
-                            </div>
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Category</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($db->getRecentPosts(5) as $post): ?>
-                                        <tr>
-                                            <td><?php echo $post['id']; ?></td>
-                                            <td><?php echo htmlspecialchars($post['title']); ?></td>
-                                            <td><?php echo htmlspecialchars($post['category_name'] ?? 'Uncategorized'); ?></td>
-                                            <td><?php echo ucfirst($post['status']); ?></td>
-                                            <td><?php echo date('M d, Y', strtotime($post['created_at'])); ?></td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                <?php if (isset($_SESSION['error'])): ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <?php 
+                    echo $_SESSION['error'];
+                    unset($_SESSION['error']);
+                    ?>
+                </div>
+                <?php endif; ?>
+
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">ID</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Author</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th style="width: 150px">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                $counter = 1;
+                                foreach ($posts as $post): 
+                                ?>
+                                <tr>
+                                    <td><?php echo $counter++; ?></td>
+                                    <td><?php echo htmlspecialchars($post['title']); ?></td>
+                                    <td><?php echo htmlspecialchars($post['category_name'] ?? 'Uncategorized'); ?></td>
+                                    <td><?php echo htmlspecialchars($post['author_name']); ?></td>
+                                    <td><?php echo ucfirst($post['status'] ?? 'draft'); ?></td>
+                                    <td><?php echo date('M d, Y', strtotime($post['created_at'])); ?></td>
+                                    <td>
+                                        <a href="post-edit.php?id=<?php echo $post['id']; ?>" class="btn btn-sm btn-info">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="auth/post_delete.php?id=<?php echo $post['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this post?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -8,9 +8,23 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Check if post ID is provided
+if (!isset($_GET['id'])) {
+    header("Location: posts.php");
+    exit();
+}
+
 // Get user data
 $db = new Database();
 $user = $db->getUserByUsername($_SESSION['username']);
+
+// Get post data
+$post = $db->getPostById($_GET['id']);
+if (!$post) {
+    $_SESSION['error'] = "Post not found";
+    header("Location: posts.php");
+    exit();
+}
 
 // Get site settings
 $settings = $db->getSettings();
@@ -18,6 +32,9 @@ $site_title = 'Inspira';
 
 // Get current page for active menu
 $current_page = basename($_SERVER['PHP_SELF']);
+
+// Get all categories for dropdown
+$categories = $db->getAllCategories();
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +42,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo $site_title; ?> - Dashboard</title>
+    <title><?php echo $site_title; ?> - Edit Post</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -33,6 +50,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <!-- Summernote -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -128,7 +147,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Dashboard</h1>
+                        <h1 class="m-0">Edit Post</h1>
                     </div>
                 </div>
             </div>
@@ -137,88 +156,70 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <!-- Main content -->
         <div class="content">
             <div class="container-fluid">
-                <!-- Small boxes (Stat box) -->
                 <div class="row">
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3><?php echo $db->countPosts(); ?></h3>
-                                <p>Posts</p>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <form action="auth/post_process.php" method="POST" enctype="multipart/form-data" id="post-form">
+                                    <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        <input type="text" class="form-control" id="title" name="title" value="<?php echo htmlspecialchars($post['title']); ?>" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="content">Content</label>
+                                        <textarea class="form-control" id="content" name="content" rows="10"><?php echo htmlspecialchars($post['content']); ?></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="excerpt">Excerpt</label>
+                                        <textarea class="form-control" id="excerpt" name="excerpt" rows="3"><?php echo htmlspecialchars($post['excerpt']); ?></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="featured_image">Featured Image</label>
+                                        <?php if ($post['featured_image']): ?>
+                                        <div class="mb-2">
+                                            <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="Featured Image" class="img-thumbnail" style="max-height: 200px;">
+                                        </div>
+                                        <?php endif; ?>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="featured_image" name="featured_image">
+                                                <label class="custom-file-label" for="featured_image">Choose file</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" name="action" value="publish" class="btn btn-primary">Update Post</button>
+                                        <button type="submit" name="action" value="draft" class="btn btn-secondary">Save as Draft</button>
+                                        <a href="posts.php" class="btn btn-danger">Cancel</a>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="icon">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <a href="posts.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                <h3><?php echo $db->countCategories(); ?></h3>
-                                <p>Categories</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-folder"></i>
-                            </div>
-                            <a href="categories.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3><?php echo $db->countTags(); ?></h3>
-                                <p>Tags</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-tags"></i>
-                            </div>
-                            <a href="tags.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3><?php echo $db->countUsers(); ?></h3>
-                                <p>Users</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <a href="users.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Posts -->
-                <div class="row">
-                    <div class="col-12">
+                    <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Recent Posts</h3>
+                                <h3 class="card-title">Post Settings</h3>
                             </div>
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Category</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($db->getRecentPosts(5) as $post): ?>
-                                        <tr>
-                                            <td><?php echo $post['id']; ?></td>
-                                            <td><?php echo htmlspecialchars($post['title']); ?></td>
-                                            <td><?php echo htmlspecialchars($post['category_name'] ?? 'Uncategorized'); ?></td>
-                                            <td><?php echo ucfirst($post['status']); ?></td>
-                                            <td><?php echo date('M d, Y', strtotime($post['created_at'])); ?></td>
-                                        </tr>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <select class="form-control" id="category" name="category_id" form="post-form">
+                                        <?php foreach ($categories as $category): ?>
+                                        <option value="<?php echo $category['id']; ?>" <?php echo $category['id'] == $post['category_id'] ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($category['name']); ?>
+                                        </option>
                                         <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select class="form-control" id="status" name="status" form="post-form">
+                                        <option value="published" <?php echo $post['status'] === 'published' ? 'selected' : ''; ?>>Published</option>
+                                        <option value="private" <?php echo $post['status'] === 'private' ? 'selected' : ''; ?>>Private</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -242,5 +243,30 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<!-- Summernote -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Initialize Summernote
+    $('#content').summernote({
+        height: 300,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+    });
+
+    // Update file input label
+    $('input[type="file"]').on('change', function() {
+        var fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').html(fileName);
+    });
+});
+</script>
 </body>
 </html> 

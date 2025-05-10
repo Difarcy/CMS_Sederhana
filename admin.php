@@ -2,8 +2,8 @@
 session_start();
 require_once 'config/database.php';
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
+// Check if user is logged in and is admin
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
@@ -14,10 +14,17 @@ $user = $db->getUserByUsername($_SESSION['username']);
 
 // Get site settings
 $settings = $db->getSettings();
-$site_title = 'Inspira';
+$site_title = $settings['site_title'] ?? 'Inspira';
 
 // Get current page for active menu
 $current_page = basename($_SERVER['PHP_SELF']);
+
+// Get statistics
+$total_posts = $db->countPosts();
+$total_categories = $db->countCategories();
+$total_tags = $db->countTags();
+$total_users = $db->countUsers();
+$recent_posts = $db->getRecentPosts(5);
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +32,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo $site_title; ?> - Dashboard</title>
+    <title><?php echo $site_title; ?> - Admin Dashboard</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -79,43 +86,47 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-item">
-                        <a href="index.php" class="nav-link <?php echo $current_page === 'index.php' ? 'active' : ''; ?>">
+                        <a href="index.php" class="nav-link">
                             <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>Dashboard</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="posts.php" class="nav-link <?php echo $current_page === 'posts.php' ? 'active' : ''; ?>">
+                        <a href="posts.php" class="nav-link">
                             <i class="nav-icon fas fa-file-alt"></i>
                             <p>Posts</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="categories.php" class="nav-link <?php echo $current_page === 'categories.php' ? 'active' : ''; ?>">
+                        <a href="categories.php" class="nav-link">
                             <i class="nav-icon fas fa-folder"></i>
                             <p>Categories</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="tags.php" class="nav-link <?php echo $current_page === 'tags.php' ? 'active' : ''; ?>">
+                        <a href="tags.php" class="nav-link">
                             <i class="nav-icon fas fa-tags"></i>
                             <p>Tags</p>
                         </a>
                     </li>
-                    <?php if ($user['role'] === 'admin'): ?>
                     <li class="nav-item">
-                        <a href="users.php" class="nav-link <?php echo $current_page === 'users.php' ? 'active' : ''; ?>">
+                        <a href="users.php" class="nav-link">
                             <i class="nav-icon fas fa-users"></i>
                             <p>Users</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="settings.php" class="nav-link <?php echo $current_page === 'settings.php' ? 'active' : ''; ?>">
+                        <a href="settings.php" class="nav-link">
                             <i class="nav-icon fas fa-cog"></i>
                             <p>Settings</p>
                         </a>
                     </li>
-                    <?php endif; ?>
+                    <li class="nav-item">
+                        <a href="admin.php" class="nav-link active">
+                            <i class="nav-icon fas fa-user-shield"></i>
+                            <p>Admin Panel</p>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -128,7 +139,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Dashboard</h1>
+                        <h1 class="m-0">Admin Dashboard</h1>
                     </div>
                 </div>
             </div>
@@ -137,13 +148,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <!-- Main content -->
         <div class="content">
             <div class="container-fluid">
-                <!-- Small boxes (Stat box) -->
+                <!-- Statistics Cards -->
                 <div class="row">
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3><?php echo $db->countPosts(); ?></h3>
-                                <p>Posts</p>
+                                <h3><?php echo $total_posts; ?></h3>
+                                <p>Total Posts</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-file-alt"></i>
@@ -154,7 +165,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3><?php echo $db->countCategories(); ?></h3>
+                                <h3><?php echo $total_categories; ?></h3>
                                 <p>Categories</p>
                             </div>
                             <div class="icon">
@@ -166,7 +177,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-warning">
                             <div class="inner">
-                                <h3><?php echo $db->countTags(); ?></h3>
+                                <h3><?php echo $total_tags; ?></h3>
                                 <p>Tags</p>
                             </div>
                             <div class="icon">
@@ -178,7 +189,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                <h3><?php echo $db->countUsers(); ?></h3>
+                                <h3><?php echo $total_users; ?></h3>
                                 <p>Users</p>
                             </div>
                             <div class="icon">
@@ -191,34 +202,84 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                 <!-- Recent Posts -->
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">Recent Posts</h3>
                             </div>
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Category</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($db->getRecentPosts(5) as $post): ?>
-                                        <tr>
-                                            <td><?php echo $post['id']; ?></td>
-                                            <td><?php echo htmlspecialchars($post['title']); ?></td>
-                                            <td><?php echo htmlspecialchars($post['category_name'] ?? 'Uncategorized'); ?></td>
-                                            <td><?php echo ucfirst($post['status']); ?></td>
-                                            <td><?php echo date('M d, Y', strtotime($post['created_at'])); ?></td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Author</th>
+                                                <th>Category</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($recent_posts as $post): ?>
+                                            <tr>
+                                                <td><?php echo htmlspecialchars($post['title']); ?></td>
+                                                <td><?php echo htmlspecialchars($post['author']); ?></td>
+                                                <td><?php echo htmlspecialchars($post['category']); ?></td>
+                                                <td>
+                                                    <span class="badge badge-<?php echo $post['status'] === 'published' ? 'success' : 'warning'; ?>">
+                                                        <?php echo ucfirst($post['status']); ?>
+                                                    </span>
+                                                </td>
+                                                <td><?php echo date('M d, Y', strtotime($post['created_at'])); ?></td>
+                                                <td>
+                                                    <a href="post-edit.php?id=<?php echo $post['id']; ?>" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="post-delete.php?id=<?php echo $post['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Quick Actions</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <a href="post-new.php" class="btn btn-primary btn-block">
+                                            <i class="fas fa-plus"></i> New Post
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="category-new.php" class="btn btn-success btn-block">
+                                            <i class="fas fa-folder-plus"></i> New Category
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="tag-new.php" class="btn btn-warning btn-block">
+                                            <i class="fas fa-tag"></i> New Tag
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="user-new.php" class="btn btn-info btn-block">
+                                            <i class="fas fa-user-plus"></i> New User
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

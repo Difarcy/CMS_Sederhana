@@ -15,28 +15,26 @@ if (isset($_SESSION['success'])) {
     unset($_SESSION['success']);
 }
 
-// Process login
+// Process forgot password request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Validate required fields
-        if (empty($_POST['username']) || empty($_POST['password'])) {
-            throw new Exception("Username dan password harus diisi.");
+        if (empty($_POST['email'])) {
+            throw new Exception("Email harus diisi.");
+        }
+
+        $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("Format email tidak valid.");
         }
 
         $db = new Database();
-        // Attempt login
-        $user = $db->login($_POST['username'], $_POST['password']);
-        if ($user) {
-            // Set session variables
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
-
-            // Redirect to dashboard
-            header("Location: index.php");
+        if ($db->emailExists($email)) {
+            // Store email in session for reset password page
+            $_SESSION['reset_email'] = $email;
+            header("Location: reset-password.php");
             exit();
         } else {
-            throw new Exception("Username atau password salah.");
+            throw new Exception("Email tidak ditemukan dalam sistem.");
         }
     } catch (Exception $e) {
         $_SESSION['error'] = $e->getMessage();
@@ -49,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Inspira CMS</title>
+    <title>Forgot Password - Inspira CMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -124,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 0 4vw;
         }
 
-        .login-container {
+        .forgot-container {
             background: rgba(255,255,255,0.85);
             border-radius: 16px;
             box-shadow: 0 8px 32px 0 rgba(123,47,242,0.10);
@@ -135,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1.5px solid var(--border-color);
         }
 
-        .login-container::after {
+        .forgot-container::after {
             content: '';
             position: absolute;
             top: -1px; right: -1px;
@@ -145,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 0 18px 18px 0;
         }
 
-        .login-title {
+        .forgot-title {
             color: var(--primary-color);
             font-size: 20px;
             font-weight: 700;
@@ -183,46 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 16px;
         }
 
-        .show-password {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #aaa;
-            font-size: 18px;
-            z-index: 2;
-        }
-
-        .form-check-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-
-        .form-check-label {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-left: 4px;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .forgot-link {
-            font-size: 12px;
-            color: var(--primary-color);
-            text-decoration: none;
-            margin-top: 0;
-            margin-left: 8px;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
-
-        .btn-login {
+        .btn-submit {
             width: 100%;
             background: var(--primary-color);
             color: #fff;
@@ -238,11 +197,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             cursor: pointer;
         }
 
-        .btn-login:hover {
+        .btn-submit:hover {
             background: var(--primary-hover);
         }
 
-        .register-link {
+        .login-link {
             display: block;
             text-align: center;
             margin-top: 16px;
@@ -254,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-family: 'Inter', sans-serif;
         }
 
-        .register-link:hover {
+        .login-link:hover {
             text-decoration: underline;
         }
 
@@ -276,6 +235,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #d4edda;
             color: var(--success-color);
             border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-group.error input {
+            border: 1px solid var(--error-color);
+        }
+
+        .input-group.success input {
+            border: 1px solid var(--success-color);
         }
 
         @media (max-width: 900px) {
@@ -306,55 +281,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
         <div class="right-panel">
-            <div class="login-container">
-                <div class="login-title">ACCOUNT LOGIN</div>
+            <div class="forgot-container">
+                <div class="forgot-title">FORGOT PASSWORD</div>
                 <?php if ($error): ?>
                     <div class="alert alert-danger"><?php echo $error; ?></div>
                 <?php endif; ?>
                 <?php if ($success): ?>
                     <div class="alert alert-success"><?php echo $success; ?></div>
                 <?php endif; ?>
-                <form action="login.php" method="post" autocomplete="off">
-                    <div class="form-label">USERNAME</div>
+                <form action="forgot-password.php" method="post" autocomplete="off" id="forgotForm">
+                    <div class="form-label">EMAIL</div>
                     <div class="input-group">
-                        <input type="text" class="form-control" name="username" required autofocus>
+                        <input type="email" class="form-control" name="email" id="email" required autofocus>
+                        <div class="error-message" id="email-error"></div>
                     </div>
-                    <div class="form-label">PASSWORD</div>
-                    <div class="input-group">
-                        <input type="password" class="form-control" name="password" id="password" required>
-                        <span class="show-password" onclick="togglePassword()" id="show-pwd-icon">
-                            <i class="fas fa-eye" id="eye-icon"></i>
-                        </span>
-                    </div>
-                    <div class="form-check-row">
-                        <div style="display: flex; align-items: center;">
-                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                            <label class="form-check-label" for="remember">Remember Me</label>
-                        </div>
-                        <a href="forgot-password.php" class="forgot-link">Forgot Password?</a>
-                    </div>
-                    <button type="submit" class="btn-login">LOG IN</button>
+
+                    <button type="submit" class="btn-submit">NEW PASSWORD</button>
                 </form>
-                <a href="register.php" class="register-link">Don't have an account?</a>
+                <a href="login.php" class="login-link">Back to Login</a>
             </div>
         </div>
     </div>
 
     <script>
-    function togglePassword() {
-        const passwordInput = document.getElementById('password');
-        const eyeIcon = document.getElementById('eye-icon');
-        
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
+    // Real-time validation
+    const email = document.getElementById('email');
+    const form = document.getElementById('forgotForm');
+
+    // Email validation
+    email.addEventListener('input', function() {
+        const value = this.value.trim();
+        const errorElement = document.getElementById('email-error');
+        const inputGroup = this.parentElement;
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            errorElement.textContent = 'Format email tidak valid';
+            errorElement.style.display = 'block';
+            inputGroup.classList.add('error');
+            inputGroup.classList.remove('success');
         } else {
-            passwordInput.type = 'password';
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
+            errorElement.style.display = 'none';
+            inputGroup.classList.remove('error');
+            inputGroup.classList.add('success');
         }
-    }
+    });
+
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+
+        // Email validation
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+            document.getElementById('email-error').style.display = 'block';
+            email.parentElement.classList.add('error');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
     </script>
 </body>
 </html> 
