@@ -34,3 +34,27 @@ Dibuat untuk memenuhi tugas mata kuliah Pemrograman Internet.
 1. Clone repositori ini  
    ```bash
    git clone https://github.com/Difarcy/CMS_Sederhana.git
+```
+
+## Struktur Folder MVC
+
+```
+/app
+  /controllers
+  /models
+  /views
+/public
+  /assets
+    /css
+    /img
+    /js
+/config
+/core
+```
+
+- `app/controllers`: Controller aplikasi
+- `app/models`: Model/data
+- `app/views`: Tampilan
+- `public`: File publik (index.php, asset)
+- `config`: Konfigurasi
+- `core`: File inti MVC
