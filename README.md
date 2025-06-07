@@ -59,7 +59,7 @@ Dibuat untuk memenuhi tugas mata kuliah Pemrograman Internet.
 - `config`: Konfigurasi
 - `core`: File inti MVC
 
----
+```
 
 ## Tampilan Website
 Screenshot berikut menampilkan hasil implementasi website  
@@ -68,4 +68,6 @@ dengan arsitektur MVC buatan sendiri, serta terintegrasi
 dengan database MySQL yang dikelola menggunakan phpMyAdmin,  
 sesuai dengan spesifikasi tugas yang diberikan.
 
-![Halaman Beranda](public/assets/images/Halaman Beranda.png)
+1. Halaman Beranda
+![Screenshot (11)](https://github.com/user-attachments/assets/fb0c13d9-9ccb-49ef-a3ba-37045ebfa53a)
+
