@@ -1,4 +1,4 @@
-# CMS Sederhana
+# MVC CMS Sederhana
 
 ## Informasi Mahasiswa
 **Nama:** Jafar Siddik Aulia Rahman  
@@ -58,3 +58,7 @@ Dibuat untuk memenuhi tugas mata kuliah Pemrograman Internet.
 - `public`: File publik (index.php, asset)
 - `config`: Konfigurasi
 - `core`: File inti MVC
+
+Screenshot berikut menampilkan hasil implementasi website yang saya kembangkan menggunakan bahasa pemrograman PHP dengan arsitektur MVC buatan sendiri, serta terintegrasi dengan database MySQL yang dikelola menggunakan phpMyAdmin, sesuai dengan spesifikasi tugas yang diberikan.
+
+![Halaman Beranda](public/assets/images/Halaman Beranda.jpg)

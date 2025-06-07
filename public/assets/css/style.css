@@ -1,174 +1,251 @@
-/* Layout */
-.wrapper {
-    display: flex;
-    min-height: 100vh;
+/*================================================================
+  1. GLOBAL STYLES & CSS VARIABLES
+=================================================================*/
+:root {
+  /* Colors */
+  --primary-bg: #0050f0;
+  --white-color: #ffffff;
+  --text-color-light: #f0f0f0;
+  --text-color-dark: #333;
+  --cta-bg: #ffffff;
+  --cta-text: #0050f0;
+  --cta-hover-bg: #f0f0f0;
+
+  /* Typography */
+  --font-family-heading: 'Lora', serif;
+  --font-family-body: 'Poppins', sans-serif;
+  --font-size-base: 16px;
+
+  /* Spacing */
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 32px;
+  --spacing-xl: 64px;
+
+  /* Borders */
+  --border-radius: 8px;
 }
 
-/* Sidebar */
-.sidebar {
-    width: 250px;
-    background: #343a40;
-    color: #fff;
-    position: fixed;
-    height: 100vh;
-    overflow-y: auto;
-    transition: all 0.3s;
+/*================================================================
+  2. BASE & TYPOGRAPHY
+=================================================================*/
+body.landing-page {
+  font-family: var(--font-family-body);
+  background: url('../img/background_beranda.png') center/cover no-repeat fixed;
+  color: var(--white-color);
+  margin: 0;
+  padding: 0;
+  font-size: var(--font-size-base);
+  line-height: 1.6;
 }
 
-.sidebar-header {
-    padding: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+h1, h2, h3 {
+  font-family: var(--font-family-heading);
+  font-weight: 700;
 }
 
-.brand-link {
-    display: flex;
-    align-items: center;
-    color: #fff;
-    text-decoration: none;
+a {
+  color: var(--white-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.brand-image {
-    width: 30px;
-    height: 30px;
-    margin-right: 0.5rem;
+a:hover {
+  color: var(--text-color-light);
 }
 
-.brand-text {
-    font-size: 1.1rem;
-    font-weight: 600;
+/*================================================================
+  3. HEADER & NAVIGATION
+=================================================================*/
+.main-header {
+  padding: var(--spacing-md) var(--spacing-lg);
 }
 
-.sidebar-nav {
-    padding: 1rem 0;
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.nav-link {
-    color: rgba(255, 255, 255, 0.8);
-    padding: 0.5rem 1rem;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-weight: 700;
+  font-size: 1.5rem;
 }
 
-.nav-link:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+.logo-img {
+  height: 36px;
+  width: 36px;
 }
 
-.nav-link.active {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+.nav-center-links {
+  display: flex;
+  gap: var(--spacing-lg);
 }
 
-.nav-link i {
-    margin-right: 0.5rem;
-    width: 20px;
+.nav-center-links a {
+  position: relative;
+  padding-bottom: 5px;
+  transition: transform 0.3s ease;
+}
+
+.nav-center-links a:hover {
+  transform: translateY(-3px);
+}
+
+.nav-center-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--white-color);
+  transition: width 0.3s ease;
+}
+
+.nav-center-links a:hover::after {
+  width: 100%;
+}
+
+.nav-right-links {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.nav-login {
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.nav-login:hover {
+  color: var(--text-color-light);
+  transform: scale(1.05);
+}
+
+.nav-cta {
+  background-color: var(--cta-bg);
+  color: var(--cta-text);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.nav-cta:hover {
+  background-color: var(--cta-hover-bg);
+  color: var(--primary-bg);
+  transform: scale(1.05);
+}
+
+/*================================================================
+  4. HERO SECTION
+=================================================================*/
+.hero-section {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: var(--spacing-md) 5%;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: var(--spacing-xl);
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0;
+  padding-left: 0;
+}
+
+.hero-text {
+  max-width: 480px;
+  margin-bottom: 2rem;
+  margin-top: 60px;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  margin-bottom: var(--spacing-md);
+}
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.hero-cta {
+  background-color: var(--cta-bg);
+  color: var(--cta-text);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.hero-cta:hover {
+  background-color: var(--cta-hover-bg);
+  color: var(--cta-text);
+  transform: scale(1.05);
+}
+
+.hero-image-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.hero-image {
+  width: 450px;
+  height: auto;
+  border-radius: var(--border-radius);
+  margin-left: 90px;
+  margin-top: 40px;
+}
+
+/*================================================================
+  5. FOOTER
+=================================================================*/
+.main-footer-container {
+  text-align: center;
+  padding: var(--spacing-md);
+  font-size: 0.9rem;
+  color: var(--text-color-light);
+}
+
+/*================================================================
+  6. RESPONSIVE MEDIA QUERIES
+=================================================================*/
+@media (max-width: 1024px) {
+  .hero-content {
+    grid-template-columns: 1fr;
     text-align: center;
+  }
+  .hero-text {
+    margin-bottom: var(--spacing-lg);
+  }
+  .nav-center-links {
+    display: none; /* Simple responsive solution */
+  }
 }
 
-/* Main Content */
-.main-content {
-    flex: 1;
-    margin-left: 250px;
-    transition: all 0.3s;
-}
-
-/* Top Navigation */
-.topnav {
-    background: #fff;
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.sidebar-toggle {
-    color: #6c757d;
-    padding: 0.25rem 0.5rem;
-}
-
-.sidebar-toggle:hover {
-    color: #343a40;
-}
-
-.dropdown-toggle {
-    color: #6c757d;
-    text-decoration: none;
-}
-
-.dropdown-toggle:hover {
-    color: #343a40;
-}
-
-.dropdown-item {
-    padding: 0.5rem 1rem;
-}
-
-.dropdown-item i {
-    margin-right: 0.5rem;
-    width: 20px;
-    text-align: center;
-}
-
-/* Content Area */
-.content {
-    padding: 1.5rem;
-}
-
-/* Card */
-.card {
-    margin-bottom: 1.5rem;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #fff;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.card-title {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-/* Table */
-.table-responsive {
-    margin: 0;
-}
-
-.table {
-    margin-bottom: 0;
-}
-
-.table th {
-    font-weight: 600;
-    background-color: #f8f9fa;
-}
-
-/* Buttons */
-.btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-    .sidebar {
-        margin-left: -250px;
-    }
-    
-    .sidebar.active {
-        margin-left: 0;
-    }
-    
-    .main-content {
-        margin-left: 0;
-    }
-    
-    .main-content.active {
-        margin-left: 250px;
-    }
-} 
+  .hero-title {
+    font-size: 3rem;
+  }
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+  .main-nav {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+}
