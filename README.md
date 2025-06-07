@@ -35,6 +35,7 @@ Dibuat untuk memenuhi tugas mata kuliah Pemrograman Internet.
    ```bash
    git clone https://github.com/Difarcy/CMS_Sederhana.git
 ```
+```
 
 ## Struktur Folder MVC
 
@@ -50,6 +51,7 @@ Dibuat untuk memenuhi tugas mata kuliah Pemrograman Internet.
     /js
 /config
 /core
+```
 ```
 
 - `app/controllers`: Controller aplikasi
