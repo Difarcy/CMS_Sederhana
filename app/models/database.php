@@ -636,6 +636,34 @@ class Database {
         }
     }
 
+    public function getTagById($id) {
+        try {
+            $query = "SELECT * FROM tags WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error in getTagById: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getPostTags($post_id) {
+        try {
+            $query = "SELECT t.* FROM tags t
+                      INNER JOIN post_tags pt ON t.id = pt.tag_id
+                      WHERE pt.post_id = :post_id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':post_id', $post_id);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error in getPostTags: " . $e->getMessage());
+            return [];
+        }
+    }
+
     public function getAllUsers() {
         try {
             $query = "SELECT * FROM users ORDER BY created_at DESC";
@@ -685,28 +713,23 @@ class Database {
 
     public function createPasswordReset($email, $token, $expiry) {
         // Delete any existing reset tokens for this email
-        $stmt = $this->conn->prepare("DELETE FROM password_resets WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
+        $stmt = $this->conn->prepare("DELETE FROM password_resets WHERE email = :email");
+        $stmt->execute(['email' => $email]);
 
         // Create new reset token
-        $stmt = $this->conn->prepare("INSERT INTO password_resets (email, token, expiry) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $email, $token, $expiry);
-        return $stmt->execute();
+        $stmt = $this->conn->prepare("INSERT INTO password_resets (email, token, expiry) VALUES (:email, :token, :expiry)");
+        return $stmt->execute(['email' => $email, 'token' => $token, 'expiry' => $expiry]);
     }
 
     public function getPasswordReset($token) {
-        $stmt = $this->conn->prepare("SELECT * FROM password_resets WHERE token = ?");
-        $stmt->bind_param("s", $token);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
+        $stmt = $this->conn->prepare("SELECT * FROM password_resets WHERE token = :token");
+        $stmt->execute(['token' => $token]);
+        return $stmt->fetch();
     }
 
     public function deletePasswordReset($token) {
-        $stmt = $this->conn->prepare("DELETE FROM password_resets WHERE token = ?");
-        $stmt->bind_param("s", $token);
-        return $stmt->execute();
+        $stmt = $this->conn->prepare("DELETE FROM password_resets WHERE token = :token");
+        return $stmt->execute(['token' => $token]);
     }
 
     public function updatePassword($email, $password) {

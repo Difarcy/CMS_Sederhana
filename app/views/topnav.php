@@ -12,13 +12,13 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li>
-                        <a class="dropdown-item" href="profile.php">
+                        <a class="dropdown-item" href="/profile">
                             <i class="fas fa-user-cog"></i> Profile
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item" href="auth/logout.php">
+                        <a class="dropdown-item" href="/logout">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </a>
                     </li>

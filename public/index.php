@@ -1,48 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inspira - Hassle-free Content Management</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="icon" type="image/png" href="assets/img/logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-</head>
-<body class="landing-page">
-    <header class="main-header">
-        <nav class="main-nav">
-            <a href="index.php" class="brand-logo">
-                <img src="assets/img/logo.png" alt="Inspira Logo" class="logo-img">
-                <span class="logo-text">Inspira</span>
-            </a>
-            <div class="nav-center-links">
-                <a href="#">Products</a>
-                <a href="#">Features</a>
-                <a href="#">Resources</a>
-                <a href="#">Plans & Pricing</a>
-            </div>
-            <div class="nav-right-links">
-                <a href="login.php" class="nav-login">Log In</a>
-                <a href="register.php" class="nav-cta">Get Started</a>
-            </div>
-        </nav>
-    </header>
+<?php
+session_start();
 
-    <main class="hero-section">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">Welcome to Inspira</h1>
-                <p class="hero-subtitle">The modern and intuitive CMS to bring your ideas to life. Effortlessly.</p>
-                <a href="register.php" class="hero-cta">Get Started</a>
-            </div>
-            <div class="hero-image-container">
-                <img src="assets/img/CMS.png" alt="Inspira CMS Dashboard Preview" class="hero-image">
-            </div>
-        </div>
-    </main>
+require_once '../core/Router.php';
+require_once '../core/Controller.php';
+require_once '../app/controllers/HomeController.php';
+require_once '../app/controllers/LoginController.php';
+require_once '../app/controllers/RegisterController.php';
+require_once '../app/controllers/AdminController.php';
+require_once '../app/controllers/CategoryController.php';
+require_once '../app/controllers/PostController.php';
+require_once '../app/controllers/TagController.php';
+require_once '../app/controllers/UserController.php';
+require_once '../app/controllers/LogoutController.php';
+require_once '../app/models/database.php';
 
-<footer class="main-footer-container">
-        <p>&copy; <?php echo date('Y'); ?> Inspira. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+$router = new Router();
+
+// Add routes
+$router->add('', 'HomeController', 'index');
+$router->add('login', 'LoginController', 'index');
+$router->add('login/process', 'LoginController', 'process');
+$router->add('register', 'RegisterController', 'index');
+$router->add('register/process', 'RegisterController', 'process');
+$router->add('admin', 'AdminController', 'index');
+$router->add('categories', 'CategoryController', 'index');
+$router->add('categories/create', 'CategoryController', 'create');
+$router->add('categories/store', 'CategoryController', 'store');
+$router->add('categories/edit/{id}', 'CategoryController', 'edit');
+$router->add('categories/update/{id}', 'CategoryController', 'update');
+$router->add('categories/delete/{id}', 'CategoryController', 'delete');
+$router->add('posts', 'PostController', 'index');
+$router->add('posts/create', 'PostController', 'create');
+$router->add('posts/store', 'PostController', 'store');
+$router->add('posts/edit/{id}', 'PostController', 'edit');
+$router->add('posts/update/{id}', 'PostController', 'update');
+$router->add('posts/delete/{id}', 'PostController', 'delete');
+$router->add('tags', 'TagController', 'index');
+$router->add('tags/create', 'TagController', 'create');
+$router->add('tags/store', 'TagController', 'store');
+$router->add('tags/edit/{id}', 'TagController', 'edit');
+$router->add('tags/update/{id}', 'TagController', 'update');
+$router->add('tags/delete/{id}', 'TagController', 'delete');
+$router->add('users', 'UserController', 'index');
+$router->add('users/create', 'UserController', 'create');
+$router->add('users/store', 'UserController', 'store');
+$router->add('users/edit/{id}', 'UserController', 'edit');
+$router->add('users/update/{id}', 'UserController', 'update');
+$router->add('users/delete/{id}', 'UserController', 'delete');
+$router->add('logout', 'LogoutController', 'index');
+
+
+$url = isset($_GET['url']) ? $_GET['url'] : '';
+
+$router->dispatch($url);
