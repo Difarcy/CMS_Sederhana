@@ -12,6 +12,9 @@ require_once '../app/controllers/PostController.php';
 require_once '../app/controllers/TagController.php';
 require_once '../app/controllers/UserController.php';
 require_once '../app/controllers/LogoutController.php';
+require_once '../app/controllers/ForgotPasswordController.php';
+require_once '../app/controllers/ResetPasswordController.php';
+require_once '../app/controllers/UserDashboardController.php';
 require_once '../app/models/database.php';
 
 $router = new Router();
@@ -49,6 +52,13 @@ $router->add('users/update/{id}', 'UserController', 'update');
 $router->add('users/delete/{id}', 'UserController', 'delete');
 $router->add('logout', 'LogoutController', 'index');
 
+// Forgot Password & Reset Password
+$router->add('forgot-password', 'ForgotPasswordController', 'index');
+$router->add('forgot-password/process', 'ForgotPasswordController', 'process');
+$router->add('reset-password', 'ResetPasswordController', 'index');
+$router->add('reset-password/process', 'ResetPasswordController', 'process');
+
+$router->add('user-dashboard', 'UserDashboardController', 'index');
 
 $url = isset($_GET['url']) ? $_GET['url'] : '';
 

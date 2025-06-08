@@ -8,7 +8,7 @@
             <div class="dropdown">
                 <button class="btn btn-link dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user"></i>
-                    <?php echo htmlspecialchars($user['username']); ?>
+                    <?php echo isset($user['username']) ? htmlspecialchars($user['username']) : 'User'; ?>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li>

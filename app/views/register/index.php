@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Inspira CMS</title>
+    <title>Register - Inspira</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/CMS_Sederhana/assets/css/style.css">
+    <link rel="icon" href="public/assets/img/logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #1e90ff;
@@ -238,14 +241,16 @@
         }
     </style>
 </head>
-<body>
-    <div class="main-wrapper">
-        <div class="left-panel">
-            <img src="/assets/img/logo.png" alt="Inspira Logo" class="brand-img" style="width:180px;height:180px;margin-bottom:12px;object-fit:contain;background:transparent;filter:drop-shadow(0 2px 16px rgba(0,0,0,0.08));">
-            <div class="brand-title">Inspira</div>
-            <div class="brand-tagline">
-                Platform CMS modern untuk mengelola, membagikan, dan menginspirasi dunia dengan konten Anda.
-            </div>
+    <body>
+        <div class="main-wrapper">
+            <div class="left-panel">
+        <a href="/CMS_Sederhana/public/" style="text-decoration:none; color:white; display:flex; flex-direction:column; align-items:center;">
+            <img src="/CMS_Sederhana/public/assets/img/logo.png" alt="Inspira Logo" class="logo-img" style="width:180px;height:180px;margin-bottom:12px;object-fit:contain;background:transparent;filter:drop-shadow(0 2px 16px rgba(0,0,0,0.08));">
+            <span class="brand-title" style="color:white;">INSPIRA</span>
+        </a>
+        <div class="brand-tagline">
+            A modern content management platform designed to help you organize, share, and inspire the world with your content.
+        </div>
         </div>
         <div class="right-panel">
             <div class="register-container">
@@ -256,7 +261,7 @@
                 <?php if (isset($_SESSION['success'])): ?>
                     <div class="alert alert-success"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
                 <?php endif; ?>
-                <form action="/register/process" method="post" autocomplete="off" id="registerForm">
+                <form action="/CMS_Sederhana/register/process" method="post" autocomplete="off" id="registerForm">
                     <div class="form-label">USERNAME</div>
                     <div class="input-group">
                         <input type="text" class="form-control" name="username" id="username" required autofocus>
@@ -289,7 +294,7 @@
 
                     <button type="submit" class="btn-register">REGISTER</button>
                 </form>
-                <a href="/login" class="login-link">Already have an account?</a>
+                <a href="/CMS_Sederhana/login" class="login-link">Already have an account?</a>
             </div>
         </div>
     </div>

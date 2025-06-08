@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Inspira</title>
+    <title>Reset Password - Inspira</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/CMS_Sederhana/assets/css/style.css">
@@ -20,7 +20,6 @@
             --border-color: #e0d7fa;
             --bg-gradient: linear-gradient(135deg, #22c1c3 0%, #7b2ff2 100%);
         }
-
         body {
             min-height: 100vh;
             background: var(--bg-gradient);
@@ -29,12 +28,10 @@
             font-size: 14px;
             color: var(--text-color);
         }
-
         .main-wrapper {
             display: flex;
             min-height: 100vh;
         }
-
         .left-panel {
             flex: 1;
             background: transparent;
@@ -44,13 +41,11 @@
             justify-content: center;
             min-width: 0;
         }
-
         .brand-img {
             width: 180px;
             height: 180px;
             margin-bottom: 20px;
         }
-
         .brand-title {
             color: #fff;
             font-size: 48px;
@@ -60,18 +55,16 @@
             text-shadow: 0 2px 12px rgba(0,0,0,0.10);
             font-family: 'Poppins', sans-serif;
         }
-
         .brand-tagline {
             color: #fff;
             font-size: 18px;
-            font-weight: 500;
+            font-weight: 700;
             opacity: 0.98;
             margin-bottom: 12px;
             text-align: center;
             max-width: 360px;
             text-shadow: 0 2px 12px rgba(0,0,0,0.10);
         }
-
         .right-panel {
             flex: 0 0 420px;
             display: flex;
@@ -80,7 +73,6 @@
             min-width: 360px;
             padding: 0 4vw;
         }
-
         .login-container {
             background: rgba(255,255,255,0.85);
             border-radius: 16px;
@@ -91,7 +83,6 @@
             position: relative;
             border: 1.5px solid var(--border-color);
         }
-
         .login-container::after {
             content: '';
             position: absolute;
@@ -101,7 +92,6 @@
             background: linear-gradient(180deg, #7b2ff2 0%, #04c8de 100%);
             border-radius: 0 18px 18px 0;
         }
-
         .login-title {
             color: var(--primary-color);
             font-size: 20px;
@@ -110,7 +100,6 @@
             letter-spacing: 0.5px;
             font-family: 'Poppins', sans-serif;
         }
-
         .form-label {
             font-size: 12px;
             color: var(--primary-color);
@@ -120,7 +109,6 @@
             letter-spacing: 0.5px;
             font-family: 'Poppins', sans-serif;
         }
-
         .form-control {
             width: 100%;
             height: 38px;
@@ -134,12 +122,10 @@
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
         }
-
         .input-group {
             position: relative;
             margin-bottom: 16px;
         }
-
         .show-password {
             position: absolute;
             right: 16px;
@@ -150,7 +136,6 @@
             font-size: 18px;
             z-index: 2;
         }
-
         .form-check-row {
             display: flex;
             align-items: center;
@@ -158,14 +143,12 @@
             margin-top: 0;
             margin-bottom: 20px;
         }
-
         .form-check-label {
             font-size: 12px;
             color: var(--text-light);
             margin-left: 4px;
             font-family: 'Inter', sans-serif;
         }
-
         .forgot-link {
             font-size: 12px;
             color: var(--primary-color);
@@ -174,11 +157,9 @@
             margin-left: 8px;
             font-family: 'Inter', sans-serif;
         }
-
         .forgot-link:hover {
             text-decoration: underline;
         }
-
         .btn-login {
             width: 100%;
             background: var(--primary-color);
@@ -194,11 +175,9 @@
             font-family: 'Poppins', sans-serif;
             cursor: pointer;
         }
-
         .btn-login:hover {
             background: var(--primary-hover);
         }
-
         .register-link {
             display: block;
             text-align: center;
@@ -210,11 +189,9 @@
             pointer-events: auto;
             font-family: 'Inter', sans-serif;
         }
-
         .register-link:hover {
             text-decoration: underline;
         }
-
         .alert {
             border-radius: 5px;
             margin-bottom: 18px;
@@ -222,19 +199,16 @@
             font-size: 12px;
             font-family: 'Inter', sans-serif;
         }
-
         .alert-danger {
             background-color: #f8d7da;
             color: var(--error-color);
             border: 1px solid #f5c6cb;
         }
-
         .alert-success {
             background-color: #d4edda;
             color: var(--success-color);
             border: 1px solid #c3e6cb;
         }
-
         @media (max-width: 900px) {
             .main-wrapper {
                 flex-direction: column;
@@ -253,67 +227,38 @@
         }
     </style>
 </head>
-    <body>
-        <div class="main-wrapper">
-            <div class="left-panel">
-        <a href="/CMS_Sederhana/public/" style="text-decoration:none; color:white; display:flex; flex-direction:column; align-items:center;">
-            <img src="public/assets/img/logo.png" alt="Inspira Logo" class="logo-img" style="width:180px;height:180px;margin-bottom:12px;object-fit:contain;background:transparent;filter:drop-shadow(0 2px 16px rgba(0,0,0,0.08));">
-            <span class="brand-title" style="color:white;">INSPIRA</span>
-        </a>
-        <div class="brand-tagline">
-            A modern content management platform designed to help you organize, share, and inspire the world with your content.
-        </div>
+<body class="landing-page">
+    <div class="main-wrapper">
+        <div class="left-panel">
+            <a href="/CMS_Sederhana/public/" style="text-decoration:none; color:white; display:flex; flex-direction:column; align-items:center;">
+                <img src="/CMS_Sederhana/public/assets/img/logo.png" alt="Inspira Logo" class="logo-img" style="width:180px;height:180px;margin-bottom:12px;object-fit:contain;background:transparent;filter:drop-shadow(0 2px 16px rgba(0,0,0,0.08));">
+                <span class="brand-title" style="color:white;">INSPIRA</span>
+            </a>
+            <div class="brand-tagline">
+                A modern content management platform designed to help you organize, share, and inspire the world with your content.
+            </div>
         </div>
         <div class="right-panel">
             <div class="login-container">
-                <div class="login-title">ACCOUNT LOGIN</div>
+                <div class="login-title">Reset Password</div>
                 <?php if (isset($_SESSION['error'])): ?>
                     <div class="alert alert-danger"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
                 <?php endif; ?>
-                <?php if (isset($_SESSION['success'])): ?>
-                    <div class="alert alert-success"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
-                <?php endif; ?>
-                <form action="/CMS_Sederhana/login/process" method="post" autocomplete="off">
-                    <div class="form-label">USERNAME</div>
+                <form action="/CMS_Sederhana/reset-password/process" method="post">
+                    <input type="hidden" name="token" value="<?php echo htmlspecialchars($data['token']); ?>">
+                    <div class="form-label">New Password</div>
                     <div class="input-group">
-                        <input type="text" class="form-control" name="username" required autofocus>
+                        <input type="password" class="form-control" name="password" required autofocus>
                     </div>
-                    <div class="form-label">PASSWORD</div>
+                    <div class="form-label">Confirm Password</div>
                     <div class="input-group">
-                        <input type="password" class="form-control" name="password" id="password" required>
-                        <span class="show-password" onclick="togglePassword()" id="show-pwd-icon">
-                            <i class="fas fa-eye" id="eye-icon"></i>
-                        </span>
+                        <input type="password" class="form-control" name="confirm" required>
                     </div>
-                    <div class="form-check-row">
-                        <div style="display: flex; align-items: center;">
-                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                            <label class="form-check-label" for="remember">Remember Me</label>
-                        </div>
-                        <a href="/CMS_Sederhana/forgot-password" class="forgot-link">Forgot Password?</a>
-                    </div>
-                    <button type="submit" class="btn-login">LOG IN</button>
+                    <button type="submit" class="btn-login">Reset Password</button>
                 </form>
-                <a href="/CMS_Sederhana/register" class="register-link">Don't have an account?</a>
+                <a href="/CMS_Sederhana/login" class="register-link">Back to Login</a>
             </div>
         </div>
     </div>
-
-    <script>
-    function togglePassword() {
-        const passwordInput = document.getElementById('password');
-        const eyeIcon = document.getElementById('eye-icon');
-        
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
-        } else {
-            passwordInput.type = 'password';
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
-        }
-    }
-    </script>
 </body>
-</html>
+</html> 

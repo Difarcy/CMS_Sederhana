@@ -66,3 +66,14 @@ CREATE TABLE IF NOT EXISTS `post_tags` (
   CONSTRAINT `post_tags_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `post_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE
 );
+
+-- Tambah akun admin default
+INSERT IGNORE INTO users (username, email, password, role, status, created_at)
+VALUES (
+  'admin',
+  'admin@example.com',
+  '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+  'admin',
+  'active',
+  NOW()
+);

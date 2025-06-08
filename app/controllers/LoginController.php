@@ -22,15 +22,19 @@ class LoginController extends Controller {
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'];
 
-                    // Redirect to dashboard
-                    header("Location: /admin");
+                    // Redirect ke dashboard sesuai role
+                    if ($user['role'] === 'admin') {
+                        header("Location: /CMS_Sederhana/admin");
+                    } else {
+                        header("Location: /CMS_Sederhana/user-dashboard");
+                    }
                     exit();
                 } else {
                     throw new Exception("Username atau password salah.");
                 }
             } catch (Exception $e) {
                 $_SESSION['error'] = $e->getMessage();
-                header("Location: /login");
+                header("Location: /CMS_Sederhana/login");
                 exit();
             }
         }

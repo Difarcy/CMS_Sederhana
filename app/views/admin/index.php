@@ -11,6 +11,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <style>
+        body { background: var(--bg-gradient,#7b2ff2); color: #222; font-family: 'Poppins', sans-serif; }
+        .content-header h1 { color: #222; font-family: 'Lora', serif; font-weight: 700; }
+        .small-box { border-radius: 16px; }
+        .small-box .inner h3, .small-box .inner p { color: #fff; }
+        .small-box.bg-info { background: linear-gradient(135deg, #22c1c3 0%, #7b2ff2 100%); }
+        .small-box.bg-success { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .small-box.bg-warning { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); color: #222; }
+        .small-box.bg-danger { background: linear-gradient(135deg, #f953c6 0%, #b91d73 100%); }
+        .card { border-radius: 16px; color: #222; }
+        .card-title { color: #222; font-family: 'Lora', serif; font-weight: 600; }
+        .btn { border-radius: 8px; font-family: 'Poppins', sans-serif; }
+        .main-footer { background: #fff; color: #7b2ff2; border-top: 1px solid #eee; }
+        table th, table td { color: #222; }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -109,6 +124,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <?php if (isset($data['recent_posts']) && is_array($data['recent_posts'])): ?>
                                             <?php foreach ($data['recent_posts'] as $post): ?>
                                             <tr>
                                                 <td><?php echo htmlspecialchars($post['title']); ?></td>
@@ -130,6 +146,7 @@
                                                 </td>
                                             </tr>
                                             <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -177,11 +194,8 @@
     </div>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="float-right d-none d-sm-block">
-            <b>Version</b> 1.0.0
-        </div>
-        <strong>Copyright &copy; <?php echo date('Y'); ?> <a href="#">Inspira</a>.</strong> All rights reserved.
+    <footer class="main-footer" style="text-align:center; background:#fff; color:#222; border-top:1px solid #eee;">
+        © 2025 Inspira. All rights reserved.
     </footer>
 </div>
 

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inspira - Hassle-free Content Management</title>
+    <title>Inspira</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="icon" type="image/png" href="assets/img/logo.png">
+    <link rel="icon" href="public/assets/img/logo.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="landing-page">
