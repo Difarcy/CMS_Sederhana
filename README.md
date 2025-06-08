@@ -73,3 +73,14 @@ sesuai dengan spesifikasi tugas yang diberikan.
 1. Halaman Beranda
 ![Screenshot (11)](https://github.com/user-attachments/assets/fb0c13d9-9ccb-49ef-a3ba-37045ebfa53a)
 
+2. Halaman Login
+![Screenshot (14)](https://github.com/user-attachments/assets/1f5aac6c-f83b-445a-8aa0-6f68c43e4797)
+   
+4. Halaman Register
+![Screenshot (15)](https://github.com/user-attachments/assets/d96332a2-f20d-47f1-bcfc-2c71497dc638)
+
+6. Halaman Forgot Password
+![Screenshot (16)](https://github.com/user-attachments/assets/e4603cfb-c5f0-4103-a2f6-b2b6e1a3eb51)
+
+8. Halaman Dashboard
+
