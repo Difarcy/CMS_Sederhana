@@ -21,6 +21,7 @@ class LoginController extends Controller {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'];
+                    $_SESSION['success'] = 'Login berhasil! Selamat datang, ' . htmlspecialchars($user['username']) . '.';
 
                     // Redirect ke dashboard sesuai role
                     if ($user['role'] === 'admin') {
@@ -30,7 +31,9 @@ class LoginController extends Controller {
                     }
                     exit();
                 } else {
-                    throw new Exception("Username atau password salah.");
+                    $_SESSION['error'] = "Username atau password salah.";
+                    header("Location: /CMS_Sederhana/login");
+                    exit();
                 }
             } catch (Exception $e) {
                 $_SESSION['error'] = $e->getMessage();

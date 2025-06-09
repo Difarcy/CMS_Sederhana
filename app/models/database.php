@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = 'localhost';
-    private $db_name = 'csm_sederhana';
+    private $db_name = 'cms_sederhana';
     private $username = 'root';
     private $password = '';
     private $conn;

@@ -39,16 +39,18 @@ class RegisterController extends Controller {
                     'status' => 'active'
                 ];
 
-                if ($db->createUser($user['username'], $user['email'], $user['password'], $user['role'], $user['status'])) {
+                if ($db->createUser($user['username'], $user['email'], $_POST['password'], $user['role'], $user['status'])) {
                     $_SESSION['success'] = "Registrasi berhasil. Silakan login.";
-                    header("Location: /login");
+                    header("Location: /CMS_Sederhana/login");
                     exit();
                 } else {
-                    throw new Exception("Registrasi gagal. Silakan coba lagi.");
+                    $_SESSION['error'] = "Registrasi gagal. Silakan coba lagi.";
+                    header("Location: /CMS_Sederhana/register");
+                    exit();
                 }
             } catch (Exception $e) {
                 $_SESSION['error'] = $e->getMessage();
-                header("Location: /register");
+                header("Location: /CMS_Sederhana/register");
                 exit();
             }
         }

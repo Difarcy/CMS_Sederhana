@@ -15,6 +15,11 @@ require_once '../app/controllers/LogoutController.php';
 require_once '../app/controllers/ForgotPasswordController.php';
 require_once '../app/controllers/ResetPasswordController.php';
 require_once '../app/controllers/UserDashboardController.php';
+require_once '../app/controllers/PagesController.php';
+require_once '../app/controllers/MediaController.php';
+require_once '../app/controllers/CommentsController.php';
+require_once '../app/controllers/SettingsController.php';
+require_once '../app/controllers/ProfileController.php';
 require_once '../app/models/database.php';
 
 $router = new Router();
@@ -59,6 +64,14 @@ $router->add('reset-password', 'ResetPasswordController', 'index');
 $router->add('reset-password/process', 'ResetPasswordController', 'process');
 
 $router->add('user-dashboard', 'UserDashboardController', 'index');
+
+$router->add('pages', 'PagesController', 'index');
+$router->add('media', 'MediaController', 'index');
+$router->add('comments', 'CommentsController', 'index');
+$router->add('settings', 'SettingsController', 'index');
+
+$router->add('profile', 'ProfileController', 'index');
+$router->add('profile/logout', 'ProfileController', 'logout');
 
 $url = isset($_GET['url']) ? $_GET['url'] : '';
 

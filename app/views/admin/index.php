@@ -192,11 +192,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="main-footer" style="text-align:center; background:#fff; color:#222; border-top:1px solid #eee;">
-        © 2025 Inspira. All rights reserved.
-    </footer>
 </div>
 
 <!-- jQuery -->
