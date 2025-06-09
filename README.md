@@ -82,5 +82,7 @@ sesuai dengan spesifikasi tugas yang diberikan.
 6. Halaman Forgot Password
 ![Screenshot (16)](https://github.com/user-attachments/assets/e4603cfb-c5f0-4103-a2f6-b2b6e1a3eb51)
 
-8. Halaman Dashboard
+5. Halaman Dashboard
+![Screenshot (21)](https://github.com/user-attachments/assets/5ce02691-6b58-4ade-9c8d-50712cdbeaa1)
+
 
